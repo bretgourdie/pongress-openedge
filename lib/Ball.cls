@@ -1,0 +1,13 @@
+ROUTINE-LEVEL ON ERROR UNDO, THROW.
+
+CLASS lib.Ball:
+
+  DEF PUBLIC PROPERTY Velocity AS INT NO-UNDO
+    GET.
+    PRIVATE SET.
+
+  CONSTRUCTOR PUBLIC Ball(pInitialVelocity AS INT):
+    ASSIGN  
+      THIS-OBJECT:Velocity = pInitialVelocity.
+  END CONSTRUCTOR.
+END CLASS.
