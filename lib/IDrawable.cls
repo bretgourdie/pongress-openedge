@@ -1,0 +1,3 @@
+INTERFACE lib.IDrawable:
+  METHOD PUBLIC VOID Draw().
+END INTERFACE.
