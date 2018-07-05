@@ -1,6 +1,6 @@
 ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
-CLASS lib.Ball:
+CLASS lib.GameObjects.Ball INHERITS GameObject:
 
   DEF PUBLIC PROPERTY Velocity AS INT NO-UNDO
     GET.

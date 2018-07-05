@@ -1,6 +1,6 @@
 USING lib.Constants.
 
-CLASS lib.GameObject ABSTRACT:
+CLASS lib.GameObjects.GameObject ABSTRACT:
 
   DEF PROTECTED PROPERTY minX AS INT
     GET:

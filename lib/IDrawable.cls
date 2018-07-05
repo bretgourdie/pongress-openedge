@@ -1,5 +1,0 @@
-INTERFACE lib.IDrawable:
-  METHOD PUBLIC VOID Draw().
-
-  METHOD PUBLIC VOID Move(pDeltaX AS INT, pDeltaY AS INT).
-END INTERFACE.
