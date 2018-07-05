@@ -1,0 +1,11 @@
+CLASS lib.Constants:
+  DEF PUBLIC STATIC PROPERTY GameAreaWidth AS INT
+    GET:
+      RETURN 512.
+    END GET.
+
+  DEF PUBLIC STATIC PROPERTY GameAreaHeight AS INT
+    GET:
+      RETURN 256.
+    END GET.
+END CLASS.
