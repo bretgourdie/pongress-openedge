@@ -24,7 +24,7 @@ CLASS lib.GameEngine:
 
   DEF PRIVATE PROPERTY framesPerSecond AS INT NO-UNDO
     GET:
-      RETURN 60.
+      RETURN 30.
     END GET.
 
   DEF PRIVATE PROPERTY millisecondsInOneSecond AS INT NO-UNDO

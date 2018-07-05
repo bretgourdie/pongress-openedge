@@ -9,6 +9,10 @@ CLASS lib.GameObjects.Player INHERITS GameObject:
     GET.
     SET.
 
+  DEF PUBLIC PROPERTY Score AS INT NO-UNDO
+    GET.
+    PRIVATE SET.
+
   CONSTRUCTOR PUBLIC Player(
     pStartX AS INT,
     pStartY AS INT,
@@ -23,6 +27,14 @@ CLASS lib.GameObjects.Player INHERITS GameObject:
   END CONSTRUCTOR.
 
   METHOD OVERRIDE PUBLIC VOID Draw():
+  END METHOD.
+
+  METHOD PUBLIC VOID IncrementScore():
+    Score = Score + 1.
+  END METHOD.
+
+  METHOD PUBLIC VOID ResetScore():
+    Score = 0.
   END METHOD.
 
 END CLASS.

@@ -3,12 +3,57 @@ ROUTINE-LEVEL ON ERROR UNDO, THROW.
 USING lib.Input.InputSource.
 
 CLASS lib.Input.UserInputSource INHERITS InputSource:
+
+  DEF PRIVATE PROPERTY UpArrow AS INT NO-UNDO
+    GET:
+      RETURN 501.
+    END GET.
+
+  DEF PRIVATE PROPERTY DownArrow AS INT NO-UNDO
+    GET:
+      RETURN 502.
+    END GET.
+
+  DEF PRIVATE PROPERTY RightArrow AS INT NO-UNDO
+    GET:
+      RETURN 503.
+    END GET.
+
+  DEF PRIVATE PROPERTY LeftArrow AS INT NO-UNDO
+    GET:
+      RETURN 504.
+    END GET.
+
+  DEF PRIVATE PROPERTY Spacebar AS INT NO-UNDO
+    GET:
+      RETURN 32.
+    END GET.
   
   CONSTRUCTOR PUBLIC UserInputSource():
-    SUPER(TRUE).
+    SUPER().
   END CONSTRUCTOR.
 
   METHOD OVERRIDE PUBLIC VOID HandleInput():
-    /* get user input */
+    READKEY PAUSE 0.
+
+    CASE LASTKEY:
+      WHEN UpArrow THEN moveUp().
+      WHEN DownArrow THEN moveDown().
+      WHEN SpaceBar THEN togglePause()
+
+    END CASE.
+    
+  END METHOD.
+
+  METHOD PRIVATE VOID moveUp():
+
+  END METHOD.
+
+  METHOD PRIVATE VOID moveDown():
+
+  END METHOD.
+
+  METHOD PRIVATE VOID togglePause():
+
   END METHOD.
 END CLASS.

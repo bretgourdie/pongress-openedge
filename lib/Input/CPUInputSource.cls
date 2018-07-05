@@ -9,7 +9,7 @@ CLASS lib.Input.CPUInputSource ABSTRACT INHERITS InputSource:
     PRIVATE SET.
 
   CONSTRUCTOR PUBLIC CPUInputSource(pDifficulty AS INT):
-    SUPER(FALSE).
+    SUPER().
 
     ASSIGN THIS-OBJECT:difficulty = pDifficulty.
   END CONSTRUCTOR.

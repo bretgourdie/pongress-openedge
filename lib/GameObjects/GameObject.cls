@@ -51,14 +51,12 @@ CLASS lib.GameObjects.GameObject ABSTRACT:
     pDeltaX AS INT,
     pDeltaY AS INT):
 
-    IF THIS-OBJECT:X + pDeltaX >= THIS-OBJECT:minX
-      AND THIS-OBJECT:X + pDeltaX <= THIS-OBJECT:maxX THEN
+    IF CanMoveX(pDeltaX) THEN
     DO:
       THIS-OBJECT:X = THIS-OBJECT:X + pDeltaX.
     END.
 
-    IF THIS-OBJECT:Y + pDeltaY >= THIS-OBJECT:minY
-      AND THIS-OBJECT:Y + pDeltaY <= THIS-OBJECT:maxY THEN
+    IF CanMoveY(pDeltaY) THEN
     DO:
       THIS-OBJECT:Y = THIS-OBJECT:Y + pDeltaY.
     END.
@@ -68,8 +66,8 @@ CLASS lib.GameObjects.GameObject ABSTRACT:
     newX AS INT,
     newY AS INT):
     ASSIGN
-      THIS-OBJECT:X = MIN(MAX(newX, THIS-OBJECT:minX), THIS-OBJECT:maxX)
-      THIS-OBJECT:X = MIN(MAX(newY, THIS-OBJECT:minY), THIS-OBJECT:maxY).
+      THIS-OBJECT:X = MIN(MAX(newX, minX), maxX)
+      THIS-OBJECT:Y = MIN(MAX(newY, minY), maxY).
   END METHOD.
 
   METHOD PROTECTED VOID setDimensions(
@@ -78,5 +76,24 @@ CLASS lib.GameObjects.GameObject ABSTRACT:
     ASSIGN
       THIS-OBJECT:height = pHeight
       THIS-OBJECT:width = pWidth.
+  END METHOD.
+
+  METHOD PUBLIC LOG CanMoveX(
+    pDeltaX AS INT):
+    RETURN CanMove(THIS-OBJECT:X, pDeltaX, minX, maxX).
+  END METHOD.
+
+  METHOD PUBLIC LOG CanMoveY(
+    pDeltaY AS INT):
+    RETURN CanMove(THIS-OBJECT:Y, pDeltaY, minY, maxY).
+  END METHOD.
+
+  METHOD PRIVATE LOG CanMove(
+    pCurrentPoint AS INT,
+    pNewOffset AS INT,
+    pMinPoint AS INT,
+    pMaxPoint AS INT):
+    RETURN pCurrentPoint + pNewOffset >= pMinPoint
+      AND pCurrentPoint + pNewOffset <= pMaxPoint.
   END METHOD.
 END CLASS.

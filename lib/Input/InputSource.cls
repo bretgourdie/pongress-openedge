@@ -2,15 +2,6 @@ ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
 CLASS lib.Input.InputSource ABSTRACT:
 
-  DEF PROTECTED PROPERTY isHumanControlled AS LOG NO-UNDO
-    GET.
-    PRIVATE SET.
-
-  CONSTRUCTOR PROTECTED InputSource(pIsHumanControlled AS LOG):
-    ASSIGN
-      THIS-OBJECT:isHumanControlled = pIsHumanControlled.
-  END CONSTRUCTOR.
-
   METHOD PUBLIC ABSTRACT VOID HandleInput().
 
 END CLASS.
