@@ -1,8 +1,8 @@
 ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
-USING lib.Player.
-USING lib.Ball.
-USING lib.InputSource.
+USING lib.GameObjects.Player.
+USING lib.GameObjects.Ball.
+USING lib.Input.InputSource.
 
 CLASS lib.GameEngine:
 
@@ -31,6 +31,14 @@ CLASS lib.GameEngine:
     GET:
       RETURN 1000.
     END GET.
+
+  DEF PRIVATE PROPERTY frameHandle AS HANDLE NO-UNDO
+    GET.
+    SET.
+
+  CONSTRUCTOR PUBLIC GameEngine(pFrameHandle AS HANDLE):
+    frameHandle = pFrameHandle.
+  END CONSTRUCTOR.
 
   METHOD PRIVATE VOID initialize():
 
@@ -75,7 +83,7 @@ CLASS lib.GameEngine:
 
   METHOD PRIVATE VOID createPlayers(pOpponentInputSource AS InputSource):
     ASSIGN
-      THIS-OBJECT:userPlayer = NEW Player(InputSource:User)
+      THIS-OBJECT:userPlayer = NEW Player(NEW UserInputSource())
       THIS-OBJECT:opponentPlayer = NEW Player(pOpponentInputSource).
   END METHOD.
 
