@@ -22,6 +22,9 @@
 /*          This .W file was created with the Progress AppBuilder.      */
 /*----------------------------------------------------------------------*/
 
+USING lib.GameEngine.
+USING lib.Input.*.
+
 /* Create an unnamed pool to store all the widgets created 
      by this procedure. This is a good default which assures
      that this procedure's triggers and internal procedures 
@@ -57,6 +60,22 @@ CREATE WIDGET-POOL.
 &ANALYZE-RESUME
 
 
+/* ************************  Function Prototypes ********************** */
+
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD getOpponentInputSource C-Win 
+FUNCTION getOpponentInputSource RETURNS InputSource
+  ( /* parameter-definitions */ )  FORWARD.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD startGame C-Win 
+FUNCTION startGame RETURNS LOGICAL
+  ( /* parameter-definitions */ )  FORWARD.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
 
 /* ***********************  Control Definitions  ********************** */
 
@@ -64,10 +83,6 @@ CREATE WIDGET-POOL.
 DEFINE VAR C-Win AS WIDGET-HANDLE NO-UNDO.
 
 /* Definitions of the field level widgets                               */
-DEFINE BUTTON exitButton 
-     LABEL "Exit" 
-     SIZE 15 BY 1.14.
-
 DEFINE BUTTON restartButton 
      LABEL "Restart" 
      SIZE 15 BY 1.14.
@@ -102,8 +117,7 @@ DEFINE FRAME DEFAULT-FRAME
 
 DEFINE FRAME settingsFrame
      difficultyComboBox AT ROW 1.29 COL 46 COLON-ALIGNED WIDGET-ID 14
-     restartButton AT ROW 4.1 COL 70 WIDGET-ID 2
-     exitButton AT ROW 4.1 COL 86 WIDGET-ID 10
+     restartButton AT ROW 4.1 COL 87 WIDGET-ID 2
      playerScore AT ROW 1.48 COL 9 COLON-ALIGNED WIDGET-ID 6
      opponentScore AT ROW 1.48 COL 28 COLON-ALIGNED WIDGET-ID 8
     WITH 1 DOWN KEEP-TAB-ORDER OVERLAY 
@@ -218,6 +232,30 @@ END.
 &ANALYZE-RESUME
 
 
+&Scoped-define FRAME-NAME settingsFrame
+&Scoped-define SELF-NAME difficultyComboBox
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL difficultyComboBox C-Win
+ON VALUE-CHANGED OF difficultyComboBox IN FRAME settingsFrame /* Difficulty */
+DO:
+  ASSIGN {&SELF-NAME}.
+END.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+
+&Scoped-define SELF-NAME restartButton
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL restartButton C-Win
+ON CHOOSE OF restartButton IN FRAME settingsFrame /* Restart */
+DO:
+  startGame().
+END.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+
+&Scoped-define FRAME-NAME DEFAULT-FRAME
 &UNDEFINE SELF-NAME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CUSTOM _MAIN-BLOCK C-Win 
@@ -289,11 +327,60 @@ PROCEDURE enable_UI :
   {&OPEN-BROWSERS-IN-QUERY-playFrame}
   DISPLAY difficultyComboBox playerScore opponentScore 
       WITH FRAME settingsFrame IN WINDOW C-Win.
-  ENABLE difficultyComboBox restartButton exitButton playerScore opponentScore 
+  ENABLE difficultyComboBox restartButton playerScore opponentScore 
       WITH FRAME settingsFrame IN WINDOW C-Win.
   {&OPEN-BROWSERS-IN-QUERY-settingsFrame}
   VIEW C-Win.
 END PROCEDURE.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+/* ************************  Function Implementations ***************** */
+
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION getOpponentInputSource C-Win 
+FUNCTION getOpponentInputSource RETURNS InputSource
+  ( /* parameter-definitions */ ) :
+/*------------------------------------------------------------------------------
+  Purpose:  
+    Notes:  
+------------------------------------------------------------------------------*/
+CASE difficultyComboBox:
+  WHEN "EasyAI" THEN RETURN NEW EasyAI().
+  OTHERWISE RETURN ?.
+END CASE.
+
+
+END FUNCTION.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION startGame C-Win 
+FUNCTION startGame RETURNS LOGICAL
+  ( /* parameter-definitions */ ) :
+/*------------------------------------------------------------------------------
+  Purpose:  
+    Notes:  
+------------------------------------------------------------------------------*/
+DEF VAR lOpponentInputSource AS InputSource NO-UNDO.
+ASSIGN lOpponentInputSource = getOpponentInputSource().
+
+IF VALID-OBJECT(lOpponentInputSource) THEN
+DO:
+  DEF VAR lGameEngine AS GameEngine NO-UNDO.
+  ASSIGN lGameEngine = NEW GameEngine(FRAME playFrame:HANDLE).
+  lGameEngine:Run(lOpponentInputSource).
+  RETURN TRUE.
+END.
+ELSE DO:
+  MESSAGE
+    "Please select your opponent's Difficulty."
+    VIEW-AS ALERT-BOX.
+  RETURN FALSE.
+END.
+
+END FUNCTION.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
