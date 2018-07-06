@@ -3,6 +3,8 @@ ROUTINE-LEVEL ON ERROR UNDO, THROW.
 USING lib.GameObjects.Player.
 USING lib.GameObjects.Ball.
 USING lib.Input.InputSource.
+USING lib.Input.UserInputSource.
+USING lib.Constants.
 
 CLASS lib.GameEngine:
 
@@ -22,16 +24,6 @@ CLASS lib.GameEngine:
     GET.
     SET.
 
-  DEF PRIVATE PROPERTY framesPerSecond AS INT NO-UNDO
-    GET:
-      RETURN 30.
-    END GET.
-
-  DEF PRIVATE PROPERTY millisecondsInOneSecond AS INT NO-UNDO
-    GET:
-      RETURN 1000.
-    END GET.
-
   DEF PRIVATE PROPERTY frameHandle AS HANDLE NO-UNDO
     GET.
     SET.
@@ -40,40 +32,45 @@ CLASS lib.GameEngine:
     frameHandle = pFrameHandle.
   END CONSTRUCTOR.
 
-  METHOD PRIVATE VOID initialize():
-
+  METHOD PRIVATE VOID initialize(pOpponentInputSource AS InputSource):
+    createPlayers(pOpponentInputSource).
+    createBall().
+    ASSIGN isRunning = TRUE.
   END METHOD.
 
-  METHOD PUBLIC VOID Run():
-    THIS-OBJECT:initialize().
+  METHOD PUBLIC VOID Run(pOpponentInputSource AS InputSource):
+    THIS-OBJECT:initialize(pOpponentInputSource).
 
     DO WHILE THIS-OBJECT:isRunning:
-      DEF VAR lStartTime AS INT NO-UNDO.
-      ASSIGN lStartTime = ETIME(TRUE).
+      ETIME(TRUE).
 
       THIS-OBJECT:update().
-      THIS-OBJECT:draw().
+      draw().
 
-      THIS-OBJECT:performTiming(lStartTime).
+      THIS-OBJECT:performTiming().
     END.
   END METHOD.
 
   METHOD PUBLIC VOID Update():
-
+    userPlayer:Update().
+    opponentPlayer:Update().
+    ball:Update().
   END METHOD.
 
   METHOD PUBLIC VOID Draw():
-
+    userPlayer:Draw().
+    opponentPlayer:Draw().
+    ball:Draw().
   END METHOD.
 
-  METHOD PRIVATE VOID performTiming(lStartTime AS INT):
+  METHOD PRIVATE VOID performTiming():
     DEF VAR lEndTime AS INT NO-UNDO.
     ASSIGN lEndTime = ETIME(FALSE).
 
     DEF VAR lTime AS INT NO-UNDO.
     ASSIGN lTime = 
-      (THIS-OBJECT:millisecondsInOneSecond / THIS-OBJECT:framesPerSecond) 
-      - (lEndTime - lStartTime).
+      (Constants:MillisecondsInOneSecond / Constants:FramesPerSecond) 
+      - lEndTime.
 
     IF lTime > 0 THEN
     DO:
@@ -82,9 +79,44 @@ CLASS lib.GameEngine:
   END METHOD.
 
   METHOD PRIVATE VOID createPlayers(pOpponentInputSource AS InputSource):
+    DEF VAR lStartY AS INT NO-UNDO.
+    ASSIGN lStartY = (Constants:GameAreaHeight - Constants:PlayerHeight) / 2.
+
+    DEF VAR lLeftStartX AS INT NO-UNDO.
+    DEF VAR lRightStartX AS INT NO-UNDO.
+    DEF VAR lDistanceFromEdgeOfScreen AS INT NO-UNDO.
+    ASSIGN 
+      lDistanceFromEdgeOfScreen = Constants:GameAreaWidth / 20
+      lLeftStartX = lDistanceFromEdgeOfScreen
+      lRightStartX = Constants:GameAreaWidth - lDistanceFromEdgeOfScreen.
+
     ASSIGN
-      THIS-OBJECT:userPlayer = NEW Player(NEW UserInputSource())
-      THIS-OBJECT:opponentPlayer = NEW Player(pOpponentInputSource).
+      userPlayer = NEW Player(
+        lLeftStartX,
+        lStartY,
+        frameHandle, 
+        NEW UserInputSource())
+      opponentPlayer = NEW Player(
+        lRightStartX,
+        lStartY,
+        frameHandle,
+        pOpponentInputSource).
+  END METHOD.
+
+  METHOD PRIVATE VOID createBall():
+    DEF VAR lStartX AS INT NO-UNDO.
+    DEF VAR lStartY AS INT NO-UNDO.
+
+    ASSIGN
+      lStartX = Constants:GameAreaWidth / 2
+      lStartY = Constants:GameAreaHeight / 2.
+
+    ASSIGN
+      ball = NEW Ball(
+        lStartX,
+        lStartY,
+        frameHandle).
+
   END METHOD.
 
   PROCEDURE Sleep EXTERNAL "kernel32.DLL":

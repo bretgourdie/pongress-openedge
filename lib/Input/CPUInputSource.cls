@@ -1,6 +1,7 @@
 ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
 USING lib.Input.InputSource.
+USING lib.Movement.MoveMessage.
 
 CLASS lib.Input.CPUInputSource ABSTRACT INHERITS InputSource:
 
@@ -14,11 +15,13 @@ CLASS lib.Input.CPUInputSource ABSTRACT INHERITS InputSource:
     ASSIGN THIS-OBJECT:difficulty = pDifficulty.
   END CONSTRUCTOR.
 
-  METHOD OVERRIDE PUBLIC VOID HandleInput():
+  METHOD OVERRIDE PUBLIC MoveMessage HandleInput():
     /* find ball */
 
     /* calculate difficulty speed */
 
     /* travel to ball */
+
+    RETURN THIS-OBJECT:NoMovement.
   END METHOD.
 END CLASS.

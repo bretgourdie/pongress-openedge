@@ -1,4 +1,5 @@
 USING lib.Constants.
+USING lib.Movement.MoveMessage.
 
 CLASS lib.GameObjects.GameObject ABSTRACT:
 
@@ -8,7 +9,7 @@ CLASS lib.GameObjects.GameObject ABSTRACT:
     END GET.
   DEF PROTECTED PROPERTY maxX AS INT
     GET:
-      RETURN Constants:GameAreaWidth - THIS-OBJECT:width.
+      RETURN Constants:GameAreaWidth - THIS-OBJECT:theWidth.
     END GET.
 
   DEF PROTECTED PROPERTY minY AS INT
@@ -17,22 +18,22 @@ CLASS lib.GameObjects.GameObject ABSTRACT:
     END GET.
   DEF PROTECTED PROPERTY maxY AS INT
     GET:
-      RETURN Constants:GameAreaHeight - THIS-OBJECT:height.
+      RETURN Constants:GameAreaHeight - THIS-OBJECT:theHeight.
     END GET.
 
-  DEF PUBLIC PROPERTY X AS INT
+  DEF PUBLIC PROPERTY XLoc AS INT
     GET.
     PROTECTED SET.
 
-  DEF PUBLIC PROPERTY Y AS INT
+  DEF PUBLIC PROPERTY YLoc AS INT
     GET.
     PROTECTED SET.
 
-  DEF PROTECTED PROPERTY width AS INT
+  DEF PROTECTED PROPERTY theWidth AS INT
     GET.
     PRIVATE SET.
 
-  DEF PROTECTED PROPERTY height AS INT
+  DEF PROTECTED PROPERTY theHeight AS INT
     GET.
     PRIVATE SET.
 
@@ -47,18 +48,30 @@ CLASS lib.GameObjects.GameObject ABSTRACT:
 
   METHOD PUBLIC ABSTRACT VOID Draw().
 
+  METHOD PUBLIC ABSTRACT VOID Update().
+
+  METHOD PUBLIC VOID MoveRelativeToCurrentPosition(
+    pMoveMessage AS MoveMessage):
+    IF VALID-OBJECT(pMoveMessage) THEN
+    DO:  
+      MoveRelativeToCurrentPosition(
+        pMoveMessage:GetXVector(),
+        pMoveMessage:GetYVector()).
+    END.
+  END METHOD.
+
   METHOD PUBLIC VOID MoveRelativeToCurrentPosition(
     pDeltaX AS INT,
     pDeltaY AS INT):
 
     IF CanMoveX(pDeltaX) THEN
     DO:
-      THIS-OBJECT:X = THIS-OBJECT:X + pDeltaX.
+      XLoc = XLoc + pDeltaX.
     END.
 
     IF CanMoveY(pDeltaY) THEN
     DO:
-      THIS-OBJECT:Y = THIS-OBJECT:Y + pDeltaY.
+      YLoc = YLoc + pDeltaY.
     END.
   END METHOD.
 
@@ -66,26 +79,26 @@ CLASS lib.GameObjects.GameObject ABSTRACT:
     newX AS INT,
     newY AS INT):
     ASSIGN
-      THIS-OBJECT:X = MIN(MAX(newX, minX), maxX)
-      THIS-OBJECT:Y = MIN(MAX(newY, minY), maxY).
+      XLoc = MIN(MAX(newX, minX), maxX)
+      YLoc = MIN(MAX(newY, minY), maxY).
   END METHOD.
 
   METHOD PROTECTED VOID setDimensions(
     pHeight AS INT,
     pWidth AS INT):
     ASSIGN
-      THIS-OBJECT:height = pHeight
-      THIS-OBJECT:width = pWidth.
+      theHeight = pHeight
+      theWidth = pWidth.
   END METHOD.
 
   METHOD PUBLIC LOG CanMoveX(
     pDeltaX AS INT):
-    RETURN CanMove(THIS-OBJECT:X, pDeltaX, minX, maxX).
+    RETURN CanMove(XLoc, pDeltaX, minX, maxX).
   END METHOD.
 
   METHOD PUBLIC LOG CanMoveY(
     pDeltaY AS INT):
-    RETURN CanMove(THIS-OBJECT:Y, pDeltaY, minY, maxY).
+    RETURN CanMove(YLoc, pDeltaY, minY, maxY).
   END METHOD.
 
   METHOD PRIVATE LOG CanMove(

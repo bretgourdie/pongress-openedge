@@ -115,6 +115,13 @@ DEFINE FRAME DEFAULT-FRAME
          AT COL 1 ROW 1
          SIZE 102.4 BY 17.86 WIDGET-ID 100.
 
+DEFINE FRAME playFrame
+    WITH 1 DOWN KEEP-TAB-ORDER OVERLAY 
+         SIDE-LABELS NO-UNDERLINE THREE-D 
+         AT X 0 Y 0
+         SIZE-PIXELS 512 BY 256
+         BGCOLOR 0 FGCOLOR 15  WIDGET-ID 200.
+
 DEFINE FRAME settingsFrame
      difficultyComboBox AT ROW 1.29 COL 46 COLON-ALIGNED WIDGET-ID 14
      restartButton AT ROW 4.1 COL 87 WIDGET-ID 2
@@ -125,14 +132,6 @@ DEFINE FRAME settingsFrame
          AT COL 1 ROW 13.14
          SIZE 102.4 BY 5.71
          TITLE "Settings" WIDGET-ID 300.
-
-DEFINE FRAME playFrame
-    WITH 1 DOWN KEEP-TAB-ORDER OVERLAY 
-         SIDE-LABELS NO-UNDERLINE THREE-D 
-         AT X 0 Y 0
-         SIZE-PIXELS 512 BY 256
-         BGCOLOR 0 FGCOLOR 15 
-         TITLE "Game" WIDGET-ID 200.
 
 
 /* *********************** Procedure Settings ************************ */
@@ -151,7 +150,7 @@ DEFINE FRAME playFrame
 IF SESSION:DISPLAY-TYPE = "GUI":U THEN
   CREATE WINDOW C-Win ASSIGN
          HIDDEN             = YES
-         TITLE              = "Pong"
+         TITLE              = "Pongress OpenEdge"
          HEIGHT             = 17.86
          WIDTH              = 102.4
          MAX-HEIGHT         = 26.86
@@ -208,7 +207,7 @@ THEN C-Win:HIDDEN = no.
 
 &Scoped-define SELF-NAME C-Win
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL C-Win C-Win
-ON END-ERROR OF C-Win /* Pong */
+ON END-ERROR OF C-Win /* Pongress OpenEdge */
 OR ENDKEY OF {&WINDOW-NAME} ANYWHERE DO:
   /* This case occurs when the user presses the "Esc" key.
      In a persistently run window, just ignore this.  If we did not, the
@@ -221,7 +220,7 @@ END.
 
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL C-Win C-Win
-ON WINDOW-CLOSE OF C-Win /* Pong */
+ON WINDOW-CLOSE OF C-Win /* Pongress OpenEdge */
 DO:
   /* This event will close the window and terminate the procedure.  */
   APPLY "CLOSE":U TO THIS-PROCEDURE.

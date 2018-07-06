@@ -1,6 +1,8 @@
 ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
 USING lib.Input.InputSource.
+USING lib.Movement.MoveMessage.
+USING lib.Movement.PlayerMoveMessage.
 
 CLASS lib.Input.UserInputSource INHERITS InputSource:
 
@@ -33,27 +35,34 @@ CLASS lib.Input.UserInputSource INHERITS InputSource:
     SUPER().
   END CONSTRUCTOR.
 
-  METHOD OVERRIDE PUBLIC VOID HandleInput():
+  METHOD OVERRIDE PUBLIC MoveMessage HandleInput():
     READKEY PAUSE 0.
 
     CASE LASTKEY:
-      WHEN UpArrow THEN moveUp().
-      WHEN DownArrow THEN moveDown().
-      WHEN SpaceBar THEN togglePause()
-
+      WHEN UpArrow THEN RETURN moveUp().
+      WHEN DownArrow THEN RETURN moveDown().
+      WHEN SpaceBar THEN togglePause().
+      OTHERWISE RETURN otherPresses().
     END CASE.
     
   END METHOD.
 
-  METHOD PRIVATE VOID moveUp():
-
+  METHOD PRIVATE PlayerMoveMessage moveUp():
+    RETURN THIS-OBJECT:PlayerMoveUp.
   END METHOD.
 
-  METHOD PRIVATE VOID moveDown():
-
+  METHOD PRIVATE PlayerMoveMessage moveDown():
+    RETURN THIS-OBJECT:PlayerMoveDown.
   END METHOD.
 
-  METHOD PRIVATE VOID togglePause():
+  METHOD PRIVATE MoveMessage togglePause():
+    MESSAGE "Please implement me"
+      VIEW-AS ALERT-BOX
+      TITLE "UserInputSource.togglePause()".
+    RETURN ?.
+  END METHOD.
 
+  METHOD PRIVATE MoveMessage otherPresses():
+    RETURN THIS-OBJECT:NoMovement.
   END METHOD.
 END CLASS.
