@@ -64,15 +64,18 @@ CLASS lib.GameObjects.GameObject ABSTRACT:
     pDeltaX AS INT,
     pDeltaY AS INT):
 
-    IF CanMoveX(pDeltaX) THEN
-    DO:
-      XLoc = XLoc + pDeltaX.
-    END.
+/*     IF pDeltaY > 0 THEN                                             */
+/*     DO:                                                             */
+/*       MESSAGE                                                       */
+/*         "YLoc:" YLoc SKIP                                           */
+/*         "pDeltaY:" pDeltaY SKIP                                     */
+/*         VIEW-AS ALERT-BOX                                           */
+/*         TITLE "GameObject.MoveRElativeTOCurrnetPosition(int, int)". */
+/*     END.                                                            */
 
-    IF CanMoveY(pDeltaY) THEN
-    DO:
-      YLoc = YLoc + pDeltaY.
-    END.
+    ASSIGN 
+      XLoc = MAX(MIN(XLoc + pDeltaX, Constants:GameAreaWidth - theWidth), 0)
+      YLoc = MAX(MIN(YLoc + pDeltaY, Constants:GameAreaHeight - theHeight), 0).
   END METHOD.
 
   METHOD PUBLIC VOID MoveToAbsolutePosition(

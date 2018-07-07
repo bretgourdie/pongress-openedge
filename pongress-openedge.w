@@ -113,13 +113,13 @@ DEFINE FRAME DEFAULT-FRAME
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT COL 1 ROW 1
-         SIZE 102.4 BY 17.86 WIDGET-ID 100.
+         SIZE 102.4 BY 20.95 WIDGET-ID 100.
 
 DEFINE FRAME playFrame
     WITH 1 DOWN KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT X 0 Y 0
-         SIZE-PIXELS 512 BY 256
+         SIZE-PIXELS 512 BY 258
          BGCOLOR 0 FGCOLOR 15  WIDGET-ID 200.
 
 DEFINE FRAME settingsFrame
@@ -129,7 +129,7 @@ DEFINE FRAME settingsFrame
      opponentScore AT ROW 1.48 COL 28 COLON-ALIGNED WIDGET-ID 8
     WITH 1 DOWN KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
-         AT COL 1 ROW 13.14
+         AT COL 1 ROW 15.29
          SIZE 102.4 BY 5.71
          TITLE "Settings" WIDGET-ID 300.
 
@@ -151,7 +151,7 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
   CREATE WINDOW C-Win ASSIGN
          HIDDEN             = YES
          TITLE              = "Pongress OpenEdge"
-         HEIGHT             = 17.86
+         HEIGHT             = 20.95
          WIDTH              = 102.4
          MAX-HEIGHT         = 26.86
          MAX-WIDTH          = 165.8
