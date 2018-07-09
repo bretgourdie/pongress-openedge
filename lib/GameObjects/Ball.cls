@@ -103,8 +103,14 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
   END CONSTRUCTOR.
 
   METHOD OVERRIDE PUBLIC VOID Update():
+
+    IF framesSinceInitialSet < Constants:FramesToWaitForBallMovement THEN
+    DO:
+      ballMoveMessage = noMovement.
+      setStateColor("Waiting").
+    END.
     
-    IF framesSinceInitialSet >= Constants:FramesToWaitForBallMovement THEN
+    ELSE
     DO:
       IF isHittingPaddle() THEN
       DO:
@@ -127,8 +133,10 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
       ELSE
       DO:
         MoveRelativeToCurrentPosition(ballMoveMessage).
+        setStateColor("Normal").
       END.
     END.
+
     framesSinceInitialSet = framesSinceInitialSet + 1.
   END METHOD.
 
