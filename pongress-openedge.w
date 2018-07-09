@@ -83,10 +83,6 @@ FUNCTION startGame RETURNS LOGICAL
 DEFINE VAR C-Win AS WIDGET-HANDLE NO-UNDO.
 
 /* Definitions of the field level widgets                               */
-DEFINE BUTTON restartButton 
-     LABEL "Restart" 
-     SIZE 15 BY 1.14.
-
 DEFINE VARIABLE opponentScore AS INTEGER FORMAT "->,>>>,>>9":U INITIAL 0 
      LABEL "Opponent" 
       VIEW-AS TEXT 
@@ -104,17 +100,7 @@ DEFINE FRAME DEFAULT-FRAME
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT COL 1 ROW 1
-         SIZE 102.4 BY 20.95 WIDGET-ID 100.
-
-DEFINE FRAME settingsFrame
-     restartButton AT ROW 4.1 COL 87 WIDGET-ID 2
-     playerScore AT ROW 1.48 COL 9 COLON-ALIGNED WIDGET-ID 6
-     opponentScore AT ROW 1.48 COL 28 COLON-ALIGNED WIDGET-ID 8
-    WITH 1 DOWN KEEP-TAB-ORDER OVERLAY 
-         SIDE-LABELS NO-UNDERLINE THREE-D 
-         AT COL 1 ROW 15.29
-         SIZE 102.4 BY 5.71
-         TITLE "Settings" WIDGET-ID 300.
+         SIZE 102.4 BY 18.14 WIDGET-ID 100.
 
 DEFINE FRAME playFrame
     WITH 1 DOWN KEEP-TAB-ORDER OVERLAY 
@@ -122,6 +108,15 @@ DEFINE FRAME playFrame
          AT X 0 Y 0
          SIZE-PIXELS 512 BY 258
          BGCOLOR 0 FGCOLOR 15  WIDGET-ID 200.
+
+DEFINE FRAME settingsFrame
+     playerScore AT ROW 1.48 COL 9 COLON-ALIGNED WIDGET-ID 6
+     opponentScore AT ROW 1.48 COL 28 COLON-ALIGNED WIDGET-ID 8
+    WITH 1 DOWN KEEP-TAB-ORDER OVERLAY 
+         SIDE-LABELS NO-UNDERLINE THREE-D 
+         AT COL 1 ROW 13.38
+         SIZE 102.4 BY 5.71
+         TITLE "Settings" WIDGET-ID 300.
 
 
 /* *********************** Procedure Settings ************************ */
@@ -141,7 +136,7 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
   CREATE WINDOW C-Win ASSIGN
          HIDDEN             = YES
          TITLE              = "Pongress OpenEdge"
-         HEIGHT             = 20.95
+         HEIGHT             = 18.14
          WIDTH              = 102.4
          MAX-HEIGHT         = 26.86
          MAX-WIDTH          = 165.8
@@ -221,19 +216,6 @@ END.
 &ANALYZE-RESUME
 
 
-&Scoped-define FRAME-NAME settingsFrame
-&Scoped-define SELF-NAME restartButton
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL restartButton C-Win
-ON CHOOSE OF restartButton IN FRAME settingsFrame /* Restart */
-DO:
-  startGame().
-END.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
-
-&Scoped-define FRAME-NAME DEFAULT-FRAME
 &UNDEFINE SELF-NAME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CUSTOM _MAIN-BLOCK C-Win 
@@ -306,7 +288,7 @@ PROCEDURE enable_UI :
   {&OPEN-BROWSERS-IN-QUERY-playFrame}
   DISPLAY playerScore opponentScore 
       WITH FRAME settingsFrame IN WINDOW C-Win.
-  ENABLE restartButton playerScore opponentScore 
+  ENABLE playerScore opponentScore 
       WITH FRAME settingsFrame IN WINDOW C-Win.
   {&OPEN-BROWSERS-IN-QUERY-settingsFrame}
   VIEW C-Win.
