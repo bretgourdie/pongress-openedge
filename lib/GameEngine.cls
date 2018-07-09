@@ -10,18 +10,6 @@ USING lib.TheField.
 
 CLASS lib.GameEngine:
 
-  DEF PRIVATE PROPERTY userPlayer AS Player NO-UNDO
-    GET.
-    SET.
-
-  DEF PRIVATE PROPERTY opponentPlayer AS Player NO-UNDO
-    GET.
-    SET.
-
-  DEF PRIVATE PROPERTY ball AS Ball NO-UNDO
-    GET.
-    SET.
-
   DEF PRIVATE PROPERTY theField AS TheField NO-UNDO
     GET.
     SET.
