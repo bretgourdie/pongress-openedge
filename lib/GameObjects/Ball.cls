@@ -109,6 +109,11 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
       ballMoveMessage = noMovement.
       setStateColor("Waiting").
     END.
+
+    ELSE IF framesSinceInitialSet = Constants:FramesToWaitForBallMovement THEN
+    DO:
+      ballMoveMessage = ballMoveUpLeft.
+    END.
     
     ELSE
     DO:
