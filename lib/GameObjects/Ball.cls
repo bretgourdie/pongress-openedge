@@ -106,29 +106,42 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
     
     IF framesSinceInitialSet >= Constants:FramesToWaitForBallMovement THEN
     DO:
-      /* if hit paddle */
-      IF FALSE THEN
+      IF isHittingPaddle() THEN
       DO:
         ballMoveMessage = handlePaddle().
         setStateColor("Paddle bounce").
       END.
 
-      /* if hit boundary */
-      IF FALSE THEN
+      ELSE IF isHittingBoundary() THEN
       DO:
         ballMoveMessage = handleCeilingOrFloor().
         setStateColor("Boundary bounce").
       END.
 
-      /* if scored */
-      IF FALSE THEN
+      ELSE IF isScored() THEN
       DO:
         handleBeginningTimer().
         setStateColor("Scored").
       END.
-      /*MoveRelativeToCurrentPosition(lNewXDistance, lNewYDistance).*/
+
+      ELSE
+      DO:
+        MoveRelativeToCurrentPosition(ballMoveMessage).
+      END.
     END.
     framesSinceInitialSet = framesSinceInitialSet + 1.
+  END METHOD.
+
+  METHOD PRIVATE LOG isHittingPaddle():
+    RETURN FALSE.
+  END METHOD.
+
+  METHOD PRIVATE LOG isHittingBoundary():
+    RETURN FALSE.
+  END METHOD.
+
+  METHOD PRIVATE LOG isScored():
+    RETURN FALSE.
   END METHOD.
 
   METHOD PRIVATE BallMoveMessage handleCeilingOrFloor():
