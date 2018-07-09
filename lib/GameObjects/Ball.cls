@@ -57,6 +57,10 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
     GET.
     SET.
 
+  DEF PRIVATE PROPERTY spriteColorCode AS INT NO-UNDO
+    GET.
+    SET.
+
   CONSTRUCTOR PUBLIC Ball(
     pStartX AS INT,
     pStartY AS INT,
@@ -69,13 +73,12 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
       THIS-OBJECT:ballMoveDownRight = NEW BallMoveDownRight()
       THIS-OBJECT:ballMoveUpLeft = NEW BallMoveUpLeft()
       THIS-OBJECT:ballMoveUpRight = NEW BallMoveUpRight()
-      THIS-OBJECT:noMovement = NEW NoMovement().
+      THIS-OBJECT:noMovement = NEW NoMovement()
+      THIS-OBJECT:spriteColorCode = Constants:WhiteColorCode.
 
     CREATE RECTANGLE spriteInner ASSIGN
       X = pStartX + Constants:BallInnerSpriteOffset
       Y = pStartY - Constants:BallInnerSpriteOffset
-      BGCOLOR = Constants:WhiteColorCode
-      FGCOLOR = Constants:WhiteColorCode
       HEIGHT-PIXELS = Constants:BallInnerRectangleHeight
       WIDTH-PIXELS = Constants:BallInnerRectangleWidth
       FRAME = pParentFrame
@@ -84,8 +87,6 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
     CREATE RECTANGLE spriteMiddle ASSIGN
       X = pStartX + Constants:BallMiddleSpriteOffset
       Y = pStartY - Constants:BallMiddleSpriteOffset
-      BGCOLOR = Constants:WhiteColorCode
-      FGCOLOR = Constants:WhiteColorCode
       HEIGHT-PIXELS = Constants:BallMiddleRectangleHeight
       WIDTH-PIXELS = Constants:BallMiddleRectangleWidth
       FRAME = pParentFrame
@@ -94,8 +95,6 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
     CREATE RECTANGLE spriteOuter ASSIGN
       X = pStartX + Constants:BallOuterSpriteOffset
       Y = pStartY - Constants:BallOuterSpriteOffset
-      BGCOLOR = Constants:WhiteColorCode
-      FGCOLOR = Constants:WhiteColorCode
       HEIGHT-PIXELS = Constants:BallOuterRectangleHeight
       WIDTH-PIXELS = Constants:BallOuterRectangleWidth
       FRAME = pParentFrame
@@ -111,18 +110,21 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
       IF FALSE THEN
       DO:
         ballMoveMessage = handlePaddle().
+        setStateColor("Paddle bounce").
       END.
 
       /* if hit boundary */
       IF FALSE THEN
       DO:
         ballMoveMessage = handleCeilingOrFloor().
+        setStateColor("Boundary bounce").
       END.
 
       /* if scored */
       IF FALSE THEN
       DO:
         handleBeginningTimer().
+        setStateColor("Scored").
       END.
       /*MoveRelativeToCurrentPosition(lNewXDistance, lNewYDistance).*/
     END.
@@ -151,13 +153,29 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
     ASSIGN THIS-OBJECT:ballMoveMessage = THIS-OBJECT:NoMovement.
   END METHOD.
 
+  METHOD PRIVATE VOID setStateColor(pState AS CHAR):
+    CASE pState:
+      WHEN "Waiting" THEN spriteColorCode = 11.
+      WHEN "Boundary bounce" THEN spriteColorCode = 14.
+      WHEN "Paddle bounce" THEN spriteColorCode = 10.
+      WHEN "Scored" THEN spriteColorCode = 12.
+      OTHERWISE spriteColorCode = Constants:WhiteColorCode.
+    END CASE.
+  END METHOD.
+
   METHOD OVERRIDE PUBLIC VOID Draw():
     ASSIGN
       spriteInner:X = XLoc + Constants:BallInnerSpriteOffset
       spriteInner:Y = YLoc - Constants:BallInnerSpriteOffset
+      spriteInner:BGCOLOR = spriteColorCode
+      spriteInner:FGCOLOR = spriteColorCode
       spriteMiddle:X = XLoc + Constants:BallMiddleSpriteOffset
       spriteMiddle:Y = YLoc - Constants:BallMiddleSpriteOffset
+      spriteMiddle:BGCOLOR = spriteColorCode
+      spriteMiddle:FGCOLOR = spriteColorCode
       spriteOuter:X = XLoc + Constants:BallOuterSpriteOffset
-      spriteOuter:Y = YLoc - Constants:BallOuterSpriteOffset.
+      spriteOuter:Y = YLoc - Constants:BallOuterSpriteOffset
+      spriteOuter:BGCOLOR = spriteColorCode
+      spriteOuter:FGCOLOR = spriteColorCode.
   END METHOD.
 END CLASS.
