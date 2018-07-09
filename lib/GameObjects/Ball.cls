@@ -12,7 +12,15 @@ USING lib.Movement.BallMoveUpRight.
 
 CLASS lib.GameObjects.Ball INHERITS GameObject:
 
-  DEF PRIVATE PROPERTY spriteHandle AS HANDLE NO-UNDO
+  DEF PRIVATE PROPERTY spriteInner AS HANDLE NO-UNDO
+    GET.  
+    SET.
+
+  DEF PRIVATE PROPERTY spriteMiddle AS HANDLE NO-UNDO
+    GET.
+    SET.
+
+  DEF PRIVATE PROPERTY spriteOuter AS HANDLE NO-UNDO
     GET.
     SET.
 
@@ -61,13 +69,33 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
       THIS-OBJECT:ballMoveUpRight = NEW BallMoveUpRight()
       THIS-OBJECT:noMovement = NEW NoMovement().
 
-    CREATE RECTANGLE spriteHandle ASSIGN
-      X = pStartX
-      Y = pStartY
+    CREATE RECTANGLE spriteInner ASSIGN
+      X = pStartX + Constants:BallInnerSpriteOffset
+      Y = pStartY - Constants:BallInnerSpriteOffset
       BGCOLOR = Constants:WhiteColorCode
       FGCOLOR = Constants:WhiteColorCode
-      HEIGHT-PIXELS = Constants:BallHeight
-      WIDTH-PIXELS = Constants:BallWidth
+      HEIGHT-PIXELS = Constants:BallInnerRectangleHeight
+      WIDTH-PIXELS = Constants:BallInnerRectangleWidth
+      FRAME = pParentFrame
+      VISIBLE = TRUE.
+
+    CREATE RECTANGLE spriteMiddle ASSIGN
+      X = pStartX + Constants:BallMiddleSpriteOffset
+      Y = pStartY - Constants:BallMiddleSpriteOffset
+      BGCOLOR = Constants:WhiteColorCode
+      FGCOLOR = Constants:WhiteColorCode
+      HEIGHT-PIXELS = Constants:BallMiddleRectangleHeight
+      WIDTH-PIXELS = Constants:BallMiddleRectangleWidth
+      FRAME = pParentFrame
+      VISIBLE = TRUE.
+
+    CREATE RECTANGLE spriteOuter ASSIGN
+      X = pStartX + Constants:BallOuterSpriteOffset
+      Y = pStartY - Constants:BallOuterSpriteOffset
+      BGCOLOR = Constants:WhiteColorCode
+      FGCOLOR = Constants:WhiteColorCode
+      HEIGHT-PIXELS = Constants:BallOuterRectangleHeight
+      WIDTH-PIXELS = Constants:BallOuterRectangleWidth
       FRAME = pParentFrame
       VISIBLE = TRUE.
 
@@ -123,7 +151,11 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
 
   METHOD OVERRIDE PUBLIC VOID Draw():
     ASSIGN
-      spriteHandle:X = XLoc
-      spriteHandle:Y = YLoc.
+      spriteInner:X = XLoc + Constants:BallInnerSpriteOffset
+      spriteInner:Y = YLoc - Constants:BallInnerSpriteOffset
+      spriteMiddle:X = XLoc + Constants:BallMiddleSpriteOffset
+      spriteMiddle:Y = YLoc - Constants:BallMiddleSpriteOffset
+      spriteOuter:X = XLoc + Constants:BallOuterSpriteOffset
+      spriteOuter:Y = YLoc - Constants:BallOuterSpriteOffset.
   END METHOD.
 END CLASS.

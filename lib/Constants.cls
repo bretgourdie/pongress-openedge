@@ -21,12 +21,57 @@ CLASS lib.Constants:
 
   DEF PUBLIC STATIC PROPERTY BallHeight AS INT NO-UNDO
     GET:
-      RETURN 5.
+      RETURN 1.
     END GET.
 
   DEF PUBLIC STATIC PROPERTY BallWidth AS INT NO-UNDO
     GET:
+      RETURN 1.
+    END GET.
+
+  DEF PUBLIC STATIC PROPERTY BallInnerSpriteOffset AS INT NO-UNDO
+    GET:
+      RETURN 0.
+    END GET.
+
+  DEF PUBLIC STATIC PROPERTY BallMiddleSpriteOffset AS INT NO-UNDO
+    GET:
+      RETURN 1.
+    END GET.
+
+  DEF PUBLIC STATIC PROPERTY BallOuterSpriteOffset AS INT NO-UNDO
+    GET:
+      RETURN 2.
+    END GET.
+
+  DEF PUBLIC STATIC PROPERTY BallInnerRectangleHeight AS INT NO-UNDO
+    GET:
+      RETURN 1.
+    END GET.
+
+  DEF PUBLIC STATIC PROPERTY BallInnerRectangleWidth AS INT NO-UNDO
+    GET:
       RETURN 6.
+    END GET.
+
+  DEF PUBLIC STATIC PROPERTY BallMiddleRectangleHeight AS INT NO-UNDO
+    GET:
+      RETURN 3.
+    END GET.
+
+  DEF PUBLIC STATIC PROPERTY BallMiddleRectangleWidth AS INT NO-UNDO
+    GET:
+      RETURN 4.
+    END GET.
+
+  DEF PUBLIC STATIC PROPERTY BallOuterRectangleHeight AS INT NO-UNDO
+    GET:
+      RETURN 5.
+    END GET.
+
+  DEF PUBLIC STATIC PROPERTY BallOuterRectangleWidth AS INT NO-UNDO
+    GET:
+      RETURN 2.
     END GET.
 
   DEF PUBLIC STATIC PROPERTY FramesPerSecond AS INT NO-UNDO
