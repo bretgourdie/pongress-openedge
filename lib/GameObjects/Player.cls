@@ -3,6 +3,7 @@ ROUTINE-LEVEL ON ERROR UNDO, THROW.
 USING lib.Input.InputSource.
 USING lib.GameObjects.GameObject.
 USING lib.Constants.
+USING lib.TheField.
 
 USING lib.Movement.MoveMessage.
 
@@ -24,9 +25,10 @@ CLASS lib.GameObjects.Player INHERITS GameObject:
     pStartX AS INT,
     pStartY AS INT,
     pParentFrame AS HANDLE,
-    pInputSource AS InputSource):
+    pInputSource AS InputSource,
+    pTheField AS TheField):
 
-    SUPER(Constants:PlayerHeight, Constants:PlayerWidth, pStartX, pStartY).
+    SUPER(Constants:PlayerHeight, Constants:PlayerWidth, pStartX, pStartY, pTheField).
 
     CREATE RECTANGLE spriteHandle ASSIGN
       X = pStartX

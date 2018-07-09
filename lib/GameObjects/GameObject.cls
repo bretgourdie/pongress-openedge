@@ -1,4 +1,5 @@
 USING lib.Constants.
+USING lib.TheField.
 USING lib.Movement.MoveMessage.
 
 CLASS lib.GameObjects.GameObject ABSTRACT:
@@ -37,13 +38,21 @@ CLASS lib.GameObjects.GameObject ABSTRACT:
     GET.
     PRIVATE SET.
 
+  DEF PROTECTED PROPERTY theField AS TheField
+    GET.
+    PRIVATE SET.
+
   CONSTRUCTOR PUBLIC GameObject(
     pHeight AS INT,
     pWidth AS INT,
     pStartX AS INT,
-    pStartY AS INT):
+    pStartY AS INT,
+    pTheField AS TheField):
+
     setDimensions(pHeight, pWidth).
     MoveToAbsolutePosition(pStartX, pStartY).
+    ASSIGN THIS-OBJECT:theField = pTheField.
+
   END CONSTRUCTOR.
 
   METHOD PUBLIC ABSTRACT VOID Draw().

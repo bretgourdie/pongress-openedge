@@ -6,6 +6,7 @@ USING lib.GameObjects.Ball.
 USING lib.Input.CPUInputSource.
 USING lib.Input.UserInputSource.
 USING lib.Constants.
+USING lib.TheField.
 
 CLASS lib.GameEngine:
 
@@ -21,7 +22,7 @@ CLASS lib.GameEngine:
     GET.
     SET.
 
-  DEF PRIVATE PROPERTY gameObjects AS GameObject EXTENT NO-UNDO
+  DEF PRIVATE PROPERTY theField AS TheField NO-UNDO
     GET.
     SET.
 
@@ -29,40 +30,18 @@ CLASS lib.GameEngine:
     GET.
     SET.
 
-  DEF PRIVATE PROPERTY frameHandle AS HANDLE NO-UNDO
+  DEF PRIVATE PROPERTY gameFieldFrameHandle AS HANDLE NO-UNDO
     GET.
     SET.
 
-  CONSTRUCTOR PUBLIC GameEngine(pFrameHandle AS HANDLE):
-    frameHandle = pFrameHandle.
+  CONSTRUCTOR PUBLIC GameEngine(pGameFieldFrameHandle AS HANDLE):
+    gameFieldFrameHandle = pGameFieldFrameHandle.
   END CONSTRUCTOR.
 
   METHOD PRIVATE VOID initialize():
-    createGameObjectCollection().
-    ASSIGN isRunning = TRUE.
-  END METHOD.
-
-  METHOD PRIVATE VOID createGameObjectCollection():
-    DEF VAR lPlayers AS Player EXTENT NO-UNDO.
-    DEF VAR lBall AS Ball NO-UNDO.
-    ASSIGN
-      lPlayers = createPlayers()
-      lBall = createBall().
-
-    DEF VAR lArrayLength AS INT NO-UNDO.
-    ASSIGN lArrayLength = EXTENT(lPlayers) + 1 /* ball */.
-
-    DEF VAR lGameObjects AS GameObject EXTENT.
-    EXTENT(lGameObjects) = lArrayLength.
-
-    DEF VAR lPlayerIndex AS INT NO-UNDO.
-    DO lPlayerIndex = 1 TO EXTENT(lPlayers):
-      lGameObjects[lPlayerIndex] = lPlayers[lPlayerIndex].
-    END.
-
-    lGameObjects[lArrayLength] = lBall.
-
-    ASSIGN gameObjects = lGameObjects.
+    ASSIGN 
+      theField = NEW TheField(gameFieldFrameHandle)
+      isRunning = TRUE.
   END METHOD.
 
   METHOD PUBLIC VOID Run():
@@ -80,15 +59,15 @@ CLASS lib.GameEngine:
 
   METHOD PUBLIC VOID Update():
     DEF VAR lGameObjectIndex AS INT NO-UNDO.
-    DO lGameObjectIndex = 1 TO EXTENT(gameObjects):
-      gameObjects[lGameObjectIndex]:Update().
+    DO lGameObjectIndex = 1 TO EXTENT(theField:GameObjects):
+      theField:GameObjects[lGameObjectIndex]:Update().
     END.
   END METHOD.
 
   METHOD PUBLIC VOID Draw():
     DEF VAR lGameObjectIndex AS INT NO-UNDO.
-    DO lGameObjectIndex = 1 TO EXTENT(gameObjects):
-      gameObjects[lGameObjectIndex]:Draw().
+    DO lGameObjectIndex = 1 TO EXTENT(theField:GameObjects):
+      theField:GameObjects[lGameObjectIndex]:Draw().
     END.
   END METHOD.
 
@@ -105,55 +84,6 @@ CLASS lib.GameEngine:
     DO:
       RUN Sleep(lTime).
     END.
-  END METHOD.
-
-  METHOD PRIVATE Player EXTENT createPlayers():
-    DEF VAR lStartY AS INT NO-UNDO.
-    ASSIGN lStartY = (Constants:GameAreaHeight - Constants:PlayerHeight) / 2.
-
-    DEF VAR lLeftStartX AS INT NO-UNDO.
-    DEF VAR lRightStartX AS INT NO-UNDO.
-    DEF VAR lDistanceFromEdgeOfScreen AS INT NO-UNDO.
-    ASSIGN 
-      lDistanceFromEdgeOfScreen = Constants:GameAreaWidth / 20
-      lLeftStartX = lDistanceFromEdgeOfScreen
-      lRightStartX = Constants:GameAreaWidth - lDistanceFromEdgeOfScreen.
-
-    ASSIGN
-      userPlayer = NEW Player(
-        lLeftStartX,
-        lStartY,
-        frameHandle, 
-        NEW UserInputSource())
-      opponentPlayer = NEW Player(
-        lRightStartX,
-        lStartY,
-        frameHandle,
-        NEW CPUInputSource()).
-
-    DEF VAR lPlayers AS Player EXTENT 2.
-    ASSIGN
-      lPlayers[1] = userPlayer
-      lPlayers[2] = opponentPlayer.
-
-    RETURN lPlayers.
-  END METHOD.
-
-  METHOD PRIVATE Ball createBall():
-    DEF VAR lStartX AS INT NO-UNDO.
-    DEF VAR lStartY AS INT NO-UNDO.
-
-    ASSIGN
-      lStartX = Constants:GameAreaWidth / 2
-      lStartY = Constants:GameAreaHeight / 2.
-
-    ASSIGN
-      ball = NEW Ball(
-        lStartX,
-        lStartY,
-        frameHandle).
-
-    RETURN ball.
   END METHOD.
 
   PROCEDURE Sleep EXTERNAL "kernel32.DLL":

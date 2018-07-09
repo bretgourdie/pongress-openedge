@@ -2,6 +2,7 @@ ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
 USING lib.GameObjects.GameObject.
 USING lib.Constants.
+USING lib.TheField.
 USING lib.Movement.MoveMessage.
 USING lib.Movement.NoMovement.
 USING lib.Movement.BallMoveMessage.
@@ -59,8 +60,9 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
   CONSTRUCTOR PUBLIC Ball(
     pStartX AS INT,
     pStartY AS INT,
-    pParentFrame AS HANDLE):
-    SUPER(Constants:BallHeight, Constants:BallWidth, pStartX, pStartY).
+    pParentFrame AS HANDLE,
+    pTheField AS TheField):
+    SUPER(Constants:BallHeight, Constants:BallWidth, pStartX, pStartY, pTheField).
 
     ASSIGN
       THIS-OBJECT:ballMoveDownLeft = NEW BallMoveDownLeft()
