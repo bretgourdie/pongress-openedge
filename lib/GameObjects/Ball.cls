@@ -2,6 +2,13 @@ ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
 USING lib.GameObjects.GameObject.
 USING lib.Constants.
+USING lib.Movement.MoveMessage.
+USING lib.Movement.NoMovement.
+USING lib.Movement.BallMoveMessage.
+USING lib.Movement.BallMoveDownLeft.
+USING lib.Movement.BallMoveDownRight.
+USING lib.Movement.BallMoveUpLeft.
+USING lib.Movement.BallMoveUpRight.
 
 CLASS lib.GameObjects.Ball INHERITS GameObject:
 
@@ -9,19 +16,35 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
     GET.
     SET.
 
-  DEF PUBLIC PROPERTY Velocity AS INT NO-UNDO
+  DEF PRIVATE PROPERTY ballMoveMessage AS MoveMessage NO-UNDO
     GET.
-    PRIVATE SET.
-
-  DEF PUBLIC PROPERTY XDirection AS INT NO-UNDO
-    GET.
-    PRIVATE SET.
-
-  DEF PUBLIC PROPERTY YDirection AS INT NO-UNDO
-    GET.
-    PRIVATE SET.
+    SET.
 
   DEF PRIVATE PROPERTY parentFrame AS HANDLE NO-UNDO
+    GET.
+    SET.
+
+  DEF PRIVATE PROPERTY framesSinceInitialSet AS INT NO-UNDO
+    GET.
+    SET.
+
+  DEF PRIVATE PROPERTY ballMoveDownLeft AS BallMoveMessage NO-UNDO
+    GET.
+    SET.
+
+  DEF PRIVATE PROPERTY ballMoveDownRight AS BallMoveMessage NO-UNDO
+    GET.
+    SET.
+
+  DEF PRIVATE PROPERTY ballMoveUpLeft AS BallMoveMessage NO-UNDO
+    GET.
+    SET.
+
+  DEF PRIVATE PROPERTY ballMoveUpRight AS BallMoveMessage NO-UNDO
+    GET.
+    SET.
+
+  DEF PRIVATE PROPERTY noMovement AS MoveMessage NO-UNDO
     GET.
     SET.
 
@@ -30,6 +53,13 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
     pStartY AS INT,
     pParentFrame AS HANDLE):
     SUPER(Constants:BallHeight, Constants:BallWidth, pStartX, pStartY).
+
+    ASSIGN
+      THIS-OBJECT:ballMoveDownLeft = NEW BallMoveDownLeft()
+      THIS-OBJECT:ballMoveDownRight = NEW BallMoveDownRight()
+      THIS-OBJECT:ballMoveUpLeft = NEW BallMoveUpLeft()
+      THIS-OBJECT:ballMoveUpRight = NEW BallMoveUpRight()
+      THIS-OBJECT:noMovement = NEW NoMovement().
 
     CREATE RECTANGLE spriteHandle ASSIGN
       X = pStartX
@@ -40,43 +70,55 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
       WIDTH-PIXELS = Constants:BallWidth
       FRAME = pParentFrame
       VISIBLE = TRUE.
+
   END CONSTRUCTOR.
 
   METHOD OVERRIDE PUBLIC VOID Update():
-    DEF VAR lStayXDistance AS INT NO-UNDO.
-    DEF VAR lStayYDistance AS INT NO-UNDO.
-    DEF VAR lFlippedXDistance AS INT NO-UNDO.
-    DEF VAR lFlippedYDistance AS INT NO-UNDO.
-    ASSIGN
-      lStayXDistance = Velocity * XDirection
-      lStayYDistance = Velocity * YDirection
-      lFlippedXDistance = Velocity * XDirection * -1
-      lFlippedYDistance = Velocity * YDirection * -1.
-
-    DEF VAR lNewXDistance AS INT NO-UNDO.
-    DEF VAR lNewYDistance AS INT NO-UNDO.
-
-    IF CanMoveX(lStayXDistance) THEN
+    
+    IF framesSinceInitialSet >= Constants:FramesToWaitForBallMovement THEN
     DO:
-      ASSIGN lNewXDistance = lStayXDistance.
-    END.
-    ELSE DO:
-      ASSIGN
-        lNewXDistance = lFlippedXDistance
-        XDirection = XDirection * -1.
-    END.
+      /* if hit paddle */
+      IF FALSE THEN
+      DO:
+        ballMoveMessage = handlePaddle().
+      END.
 
-    IF CanMoveY(lStayYDistance) THEN
-    DO:
-      ASSIGN lNewYDistance = lStayYDistance.
-    END.
-    ELSE DO:
-      ASSIGN
-        lNewYDistance = lFlippedYDistance
-        YDirection = YDirection * -1.
-    END.
+      /* if hit boundary */
+      IF FALSE THEN
+      DO:
+        ballMoveMessage = handleCeilingOrFloor().
+      END.
 
-    MoveRelativeToCurrentPosition(lNewXDistance, lNewYDistance).
+      /* if scored */
+      IF FALSE THEN
+      DO:
+        handleBeginningTimer().
+      END.
+      /*MoveRelativeToCurrentPosition(lNewXDistance, lNewYDistance).*/
+    END.
+    framesSinceInitialSet = framesSinceInitialSet + 1.
+  END METHOD.
+
+  METHOD PRIVATE BallMoveMessage handleCeilingOrFloor():
+    CASE ballMoveMessage:
+      WHEN ballMoveDownLeft THEN RETURN ballMoveUpLeft.
+      WHEN ballMoveDownRight THEN RETURN ballMoveUpRight.
+      WHEN ballMoveUpLeft THEN RETURN ballMoveDownLeft.
+      WHEN ballMoveUpRight THEN RETURN ballMoveDownRight.
+    END CASE.
+  END METHOD.
+
+  METHOD PRIVATE BallMoveMessage handlePaddle():
+    CASE ballMoveMessage:
+      WHEN ballMoveDownLeft THEN RETURN ballMoveDownRight.
+      WHEN ballMoveDownRight THEN RETURN ballMoveDownLeft.
+      WHEN ballMoveUpLeft THEN RETURN ballMoveUpRight.
+      WHEN ballMoveUpRight THEN RETURN ballMoveUpLeft.
+    END CASE.
+  END METHOD.
+
+  METHOD PRIVATE VOID handleBeginningTimer():
+    ASSIGN THIS-OBJECT:ballMoveMessage = THIS-OBJECT:NoMovement.
   END METHOD.
 
   METHOD OVERRIDE PUBLIC VOID Draw():
