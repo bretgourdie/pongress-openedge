@@ -77,24 +77,24 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
       THIS-OBJECT:spriteColorCode = Constants:WhiteColorCode.
 
     CREATE RECTANGLE spriteInner ASSIGN
-      X = pStartX + Constants:BallInnerSpriteOffset
-      Y = pStartY - Constants:BallInnerSpriteOffset
+      X = pStartX + Constants:BallInnerSpriteXOffset
+      Y = pStartY + Constants:BallInnerSpriteYOffset
       HEIGHT-PIXELS = Constants:BallInnerRectangleHeight
       WIDTH-PIXELS = Constants:BallInnerRectangleWidth
       FRAME = pParentFrame
       VISIBLE = TRUE.
 
     CREATE RECTANGLE spriteMiddle ASSIGN
-      X = pStartX + Constants:BallMiddleSpriteOffset
-      Y = pStartY - Constants:BallMiddleSpriteOffset
+      X = pStartX + Constants:BallMiddleSpriteXOffset
+      Y = pStartY + Constants:BallMiddleSpriteYOffset
       HEIGHT-PIXELS = Constants:BallMiddleRectangleHeight
       WIDTH-PIXELS = Constants:BallMiddleRectangleWidth
       FRAME = pParentFrame
       VISIBLE = TRUE.
 
     CREATE RECTANGLE spriteOuter ASSIGN
-      X = pStartX + Constants:BallOuterSpriteOffset
-      Y = pStartY - Constants:BallOuterSpriteOffset
+      X = pStartX + Constants:BallOuterSpriteXOffset
+      Y = pStartY + Constants:BallOuterSpriteYOffset
       HEIGHT-PIXELS = Constants:BallOuterRectangleHeight
       WIDTH-PIXELS = Constants:BallOuterRectangleWidth
       FRAME = pParentFrame
@@ -190,17 +190,18 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
   END METHOD.
 
   METHOD OVERRIDE PUBLIC VOID Draw():
+
     ASSIGN
-      spriteInner:X = XLoc + Constants:BallInnerSpriteOffset
-      spriteInner:Y = YLoc - Constants:BallInnerSpriteOffset
+      spriteInner:X = XLoc + Constants:BallInnerSpriteXOffset
+      spriteInner:Y = YLoc + Constants:BallInnerSpriteYOffset
       spriteInner:BGCOLOR = spriteColorCode
       spriteInner:FGCOLOR = spriteColorCode
-      spriteMiddle:X = XLoc + Constants:BallMiddleSpriteOffset
-      spriteMiddle:Y = YLoc - Constants:BallMiddleSpriteOffset
+      spriteMiddle:X = XLoc + Constants:BallMiddleSpriteXOffset
+      spriteMiddle:Y = YLoc + Constants:BallMiddleSpriteYOffset
       spriteMiddle:BGCOLOR = spriteColorCode
       spriteMiddle:FGCOLOR = spriteColorCode
-      spriteOuter:X = XLoc + Constants:BallOuterSpriteOffset
-      spriteOuter:Y = YLoc - Constants:BallOuterSpriteOffset
+      spriteOuter:X = XLoc + Constants:BallOuterSpriteXOffset
+      spriteOuter:Y = YLoc + Constants:BallOuterSpriteYOffset
       spriteOuter:BGCOLOR = spriteColorCode
       spriteOuter:FGCOLOR = spriteColorCode.
   END METHOD.
