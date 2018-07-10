@@ -25,9 +25,9 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
     GET.
     SET.
 
-  DEF PRIVATE PROPERTY ballMoveMessage AS MoveMessage NO-UNDO
+  DEF PUBLIC PROPERTY BallMoveMessage AS MoveMessage NO-UNDO
     GET.
-    SET.
+    PRIVATE SET.
 
   DEF PRIVATE PROPERTY parentFrame AS HANDLE NO-UNDO
     GET.
@@ -53,9 +53,9 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
     GET.
     SET.
 
-  DEF PRIVATE PROPERTY noMovement AS MoveMessage NO-UNDO
+  DEF PUBLIC PROPERTY NoMovement AS MoveMessage NO-UNDO
     GET.
-    SET.
+    PRIVATE SET.
 
   DEF PRIVATE PROPERTY spriteColorCode AS INT NO-UNDO
     GET.
@@ -73,7 +73,7 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
       THIS-OBJECT:ballMoveDownRight = NEW BallMoveDownRight()
       THIS-OBJECT:ballMoveUpLeft = NEW BallMoveUpLeft()
       THIS-OBJECT:ballMoveUpRight = NEW BallMoveUpRight()
-      THIS-OBJECT:noMovement = NEW NoMovement()
+      THIS-OBJECT:NoMovement = NEW NoMovement()
       THIS-OBJECT:spriteColorCode = Constants:WhiteColorCode.
 
     CREATE RECTANGLE spriteInner ASSIGN
@@ -106,33 +106,33 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
 
     IF framesSinceInitialSet < Constants:FramesToWaitForBallMovement THEN
     DO:
-      ballMoveMessage = noMovement.
+      BallMoveMessage = NoMovement.
       setStateColor("Waiting").
     END.
 
     ELSE IF framesSinceInitialSet = Constants:FramesToWaitForBallMovement THEN
     DO:
-      ballMoveMessage = ballMoveUpLeft.
+      BallMoveMessage = ballMoveUpLeft.
     END.
     
     ELSE
     DO:
       IF isHittingPaddle() THEN
       DO:
-        ballMoveMessage = handlePaddle().
+        BallMoveMessage = handlePaddle().
         setStateColor("Paddle bounce").
       END.
 
       ELSE IF isHittingBoundary() THEN
       DO:
-        ballMoveMessage = handleCeilingOrFloor().
+        BallMoveMessage = handleCeilingOrFloor().
         setStateColor("Boundary bounce").
       END.
 
       ELSE IF isScored() THEN
       DO:
         handleBeginningTimer().
-        ballMoveMessage = noMovement.
+        BallMoveMessage = NoMovement.
         setStateColor("Scored").
       END.
 
@@ -141,7 +141,7 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
         setStateColor("Normal").
       END.
 
-      MoveRelativeToCurrentPosition(ballMoveMessage).
+      MoveRelativeToCurrentPosition(BallMoveMessage).
     END.
 
     framesSinceInitialSet = framesSinceInitialSet + 1.
@@ -162,7 +162,7 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
   END METHOD.
 
   METHOD PRIVATE BallMoveMessage handleCeilingOrFloor():
-    CASE ballMoveMessage:
+    CASE BallMoveMessage:
       WHEN ballMoveDownLeft THEN RETURN ballMoveUpLeft.
       WHEN ballMoveDownRight THEN RETURN ballMoveUpRight.
       WHEN ballMoveUpLeft THEN RETURN ballMoveDownLeft.
@@ -171,7 +171,7 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
   END METHOD.
 
   METHOD PRIVATE BallMoveMessage handlePaddle():
-    CASE ballMoveMessage:
+    CASE BallMoveMessage:
       WHEN ballMoveDownLeft THEN RETURN ballMoveDownRight.
       WHEN ballMoveDownRight THEN RETURN ballMoveDownLeft.
       WHEN ballMoveUpLeft THEN RETURN ballMoveUpRight.

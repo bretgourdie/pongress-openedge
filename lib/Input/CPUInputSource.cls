@@ -17,16 +17,22 @@ CLASS lib.Input.CPUInputSource INHERITS InputSource:
   END CONSTRUCTOR.
 
   METHOD OVERRIDE PUBLIC MoveMessage HandleInput():
-    IF theField:Ball:YLoc + theField:Ball:theWidth / 2
-      > theField:CPUPlayer:YLoc THEN
+    IF theField:Ball:BallMoveMessage NE theField:Ball:NoMovement THEN
     DO:
-      RETURN PlayerMoveUp.
-    END.
-
-    ELSE IF theField:Ball:YLoc + theField:Ball:theWidth / 2
-      < theField:CPUPlayer:YLoc THEN
-    DO:
-      RETURN PlayerMoveDown.
+      DEF VAR lRelativeBallYPosition AS INT NO-UNDO.
+      ASSIGN
+        lRelativeBallYPosition =
+          theField:Ball:YLoc + theField:Ball:TheWidth / 2.
+  
+      IF lRelativeBallYPosition > theField:CPUPlayer:YLoc THEN
+      DO:
+        RETURN PlayerMoveDown.
+      END.
+  
+      ELSE IF lRelativeBallYPosition < theField:CPUPlayer:YLoc THEN
+      DO:
+        RETURN PlayerMoveUp.
+      END.
     END.
 
     RETURN THIS-OBJECT:NoMovement.
