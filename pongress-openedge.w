@@ -100,23 +100,23 @@ DEFINE FRAME DEFAULT-FRAME
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT COL 1 ROW 1
-         SIZE 102.4 BY 18.14 WIDGET-ID 100.
-
-DEFINE FRAME playFrame
-    WITH 1 DOWN KEEP-TAB-ORDER OVERLAY 
-         SIDE-LABELS NO-UNDERLINE THREE-D 
-         AT X 0 Y 0
-         SIZE-PIXELS 512 BY 258
-         BGCOLOR 0 FGCOLOR 15  WIDGET-ID 200.
+         SIZE 103 BY 15.91 WIDGET-ID 100.
 
 DEFINE FRAME settingsFrame
      playerScore AT ROW 1.48 COL 9 COLON-ALIGNED WIDGET-ID 6
      opponentScore AT ROW 1.48 COL 28 COLON-ALIGNED WIDGET-ID 8
     WITH 1 DOWN KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
-         AT COL 1 ROW 13.38
-         SIZE 102.4 BY 5.71
+         AT COL 1 ROW 13.33
+         SIZE 103 BY 3.57
          TITLE "Settings" WIDGET-ID 300.
+
+DEFINE FRAME playFrame
+    WITH 1 DOWN KEEP-TAB-ORDER OVERLAY 
+         SIDE-LABELS NO-UNDERLINE THREE-D 
+         AT X 0 Y 0
+         SIZE-PIXELS 515 BY 259
+         BGCOLOR 0 FGCOLOR 15  WIDGET-ID 200.
 
 
 /* *********************** Procedure Settings ************************ */
@@ -136,8 +136,8 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
   CREATE WINDOW C-Win ASSIGN
          HIDDEN             = YES
          TITLE              = "Pongress OpenEdge"
-         HEIGHT             = 18.14
-         WIDTH              = 102.4
+         HEIGHT             = 15.91
+         WIDTH              = 103
          MAX-HEIGHT         = 26.86
          MAX-WIDTH          = 165.8
          VIRTUAL-HEIGHT     = 26.86
@@ -216,6 +216,7 @@ END.
 &ANALYZE-RESUME
 
 
+&Scoped-define SELF-NAME playFrame
 &UNDEFINE SELF-NAME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CUSTOM _MAIN-BLOCK C-Win 
