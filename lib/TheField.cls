@@ -75,7 +75,7 @@ CLASS lib.TheField:
         lRightStartX,
         lStartY,
         pGameFieldFrameHandle,
-        NEW CPUInputSource(),
+        NEW CPUInputSource(THIS-OBJECT),
         THIS-OBJECT).
 
     DEF VAR lPlayers AS Player EXTENT 2.
