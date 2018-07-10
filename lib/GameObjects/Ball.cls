@@ -132,14 +132,16 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
       ELSE IF isScored() THEN
       DO:
         handleBeginningTimer().
+        ballMoveMessage = noMovement.
         setStateColor("Scored").
       END.
 
       ELSE
       DO:
-        MoveRelativeToCurrentPosition(ballMoveMessage).
         setStateColor("Normal").
       END.
+
+      MoveRelativeToCurrentPosition(ballMoveMessage).
     END.
 
     framesSinceInitialSet = framesSinceInitialSet + 1.
@@ -150,7 +152,8 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
   END METHOD.
 
   METHOD PRIVATE LOG isHittingBoundary():
-    RETURN FALSE.
+    RETURN
+      YLoc = 0 OR YLoc + theHeight = Constants:GameAreaHeight.
   END METHOD.
 
   METHOD PRIVATE LOG isScored():
