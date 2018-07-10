@@ -148,7 +148,8 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
   END METHOD.
 
   METHOD PRIVATE LOG isHittingPaddle():
-    RETURN FALSE.
+    RETURN
+      XLoc = 0 OR XLoc + theWidth = Constants:GameAreaWidth.
   END METHOD.
 
   METHOD PRIVATE LOG isHittingBoundary():
