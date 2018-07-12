@@ -14,27 +14,21 @@ CLASS lib.Input.CPUInputSource INHERITS InputSource:
     SUPER().
     ASSIGN
       theField = pTheField.
+    subscribeToEvents().
   END CONSTRUCTOR.
 
   METHOD OVERRIDE PUBLIC MoveMessage HandleInput():
-    IF theField:Ball:BallMoveMessage NE theField:Ball:NoMovement THEN
-    DO:
-      DEF VAR lRelativeBallYPosition AS INT NO-UNDO.
-      ASSIGN
-        lRelativeBallYPosition =
-          theField:Ball:YLoc + theField:Ball:TheWidth / 2.
-  
-      IF lRelativeBallYPosition > theField:CPUPlayer:YLoc THEN
-      DO:
-        RETURN PlayerMoveDown.
-      END.
-  
-      ELSE IF lRelativeBallYPosition < theField:CPUPlayer:YLoc THEN
-      DO:
-        RETURN PlayerMoveUp.
-      END.
-    END.
-
     RETURN THIS-OBJECT:NoMovement.
+  END METHOD.
+
+  METHOD PROTECTED VOID subscribeToEvents():
+    IF VALID-OBJECT(theField:Ball) THEN
+    DO:
+      theField:Ball:BallMoved:Subscribe(handleBallMoved).
+    END.
+  END METHOD.
+
+  METHOD PRIVATE VOID handleBallMoved(pBallXLoc AS INT, pBallYLoc AS INT):
+  
   END METHOD.
 END CLASS.
