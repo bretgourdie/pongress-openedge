@@ -5,6 +5,7 @@ USING lib.GameObjects.Player.
 USING lib.GameObjects.Ball.
 USING lib.Input.CPUInputSource.
 USING lib.Input.UserInputSource.
+USING lib.CollisionManager.
 USING lib.Constants.
 USING lib.TheField.
 
@@ -46,6 +47,7 @@ CLASS lib.GameEngine:
   END METHOD.
 
   METHOD PUBLIC VOID Update():
+    CollisionManager:CheckCollisions(theField).
     DEF VAR lGameObjectIndex AS INT NO-UNDO.
     DO lGameObjectIndex = 1 TO EXTENT(theField:GameObjects):
       theField:GameObjects[lGameObjectIndex]:Update().
