@@ -1,7 +1,6 @@
 ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
 USING lib.Input.InputSource.
-USING lib.Movement.MoveMessage.
 USING lib.TheField.
 
 CLASS lib.Input.CPUInputSource INHERITS InputSource:

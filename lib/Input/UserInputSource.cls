@@ -1,8 +1,6 @@
 ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
 USING lib.Input.InputSource.
-USING lib.Movement.MoveMessage.
-USING lib.Movement.PlayerMoveMessage.
 
 CLASS lib.Input.UserInputSource INHERITS InputSource:
 
