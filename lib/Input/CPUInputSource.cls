@@ -17,8 +17,9 @@ CLASS lib.Input.CPUInputSource INHERITS InputSource:
     subscribeToEvents().
   END CONSTRUCTOR.
 
-  METHOD OVERRIDE PUBLIC MoveMessage HandleInput():
-    RETURN THIS-OBJECT:NoMovement.
+  METHOD OVERRIDE PUBLIC INT HandleInput():
+    DEF VAR lYDirection AS INT NO-UNDO INITIAL 0.
+    RETURN lYDirection.
   END METHOD.
 
   METHOD PROTECTED VOID subscribeToEvents():
@@ -29,6 +30,6 @@ CLASS lib.Input.CPUInputSource INHERITS InputSource:
   END METHOD.
 
   METHOD PRIVATE VOID handleBallMoved(pBallXLoc AS INT, pBallYLoc AS INT):
-  
+    
   END METHOD.
 END CLASS.

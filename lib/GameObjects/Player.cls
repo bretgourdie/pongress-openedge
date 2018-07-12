@@ -5,8 +5,6 @@ USING lib.GameObjects.GameObject.
 USING lib.Constants.
 USING lib.TheField.
 
-USING lib.Movement.MoveMessage.
-
 CLASS lib.GameObjects.Player INHERITS GameObject:
 
   DEF PRIVATE PROPERTY spriteHandle AS HANDLE NO-UNDO
@@ -51,9 +49,12 @@ CLASS lib.GameObjects.Player INHERITS GameObject:
   END METHOD.
 
   METHOD OVERRIDE PUBLIC VOID Update():
-    DEF VAR lMoveMessage AS MoveMessage NO-UNDO.
-    ASSIGN lMoveMessage = inputSource:HandleInput().
-    MoveRelativeToCurrentPosition(lMoveMessage).
+    DEF VAR lYDirection AS INT NO-UNDO.
+    ASSIGN lYDirection = inputSource:HandleInput().
+
+    DEF VAR lYVelocity AS INT NO-UNDO.
+    ASSIGN lYVelocity = lYDirection * Constants:PlayerMovementVectorMultiplier.
+    MoveRelativeToCurrentPosition(0, lYVelocity).
   END METHOD.
 
   METHOD OVERRIDE PROTECTED VOID subscribeToEvents():

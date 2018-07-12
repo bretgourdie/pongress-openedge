@@ -35,34 +35,26 @@ CLASS lib.Input.UserInputSource INHERITS InputSource:
     SUPER().
   END CONSTRUCTOR.
 
-  METHOD OVERRIDE PUBLIC MoveMessage HandleInput():
+  METHOD OVERRIDE PUBLIC INT HandleInput():
     READKEY PAUSE 0.
 
     CASE LASTKEY:
       WHEN UpArrow THEN RETURN moveUp().
       WHEN DownArrow THEN RETURN moveDown().
-      WHEN SpaceBar THEN togglePause().
       OTHERWISE RETURN otherPresses().
     END CASE.
     
   END METHOD.
 
-  METHOD PRIVATE PlayerMoveMessage moveUp():
-    RETURN THIS-OBJECT:PlayerMoveUp.
+  METHOD PRIVATE INT moveUp():
+    RETURN -1.
   END METHOD.
 
-  METHOD PRIVATE PlayerMoveMessage moveDown():
-    RETURN THIS-OBJECT:PlayerMoveDown.
+  METHOD PRIVATE INT moveDown():
+    RETURN 1.
   END METHOD.
 
-  METHOD PRIVATE MoveMessage togglePause():
-    MESSAGE "Please implement me"
-      VIEW-AS ALERT-BOX
-      TITLE "UserInputSource.togglePause()".
-    RETURN ?.
-  END METHOD.
-
-  METHOD PRIVATE MoveMessage otherPresses():
-    RETURN THIS-OBJECT:NoMovement.
+  METHOD PRIVATE INT otherPresses():
+    RETURN 0.
   END METHOD.
 END CLASS.
