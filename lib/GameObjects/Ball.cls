@@ -40,14 +40,33 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
 
     ELSE IF framesSinceInitialSet = Constants:FramesToWaitForBallMovement THEN
     DO:
+      DEF VAR lXDirection AS INT NO-UNDO.
+      DEF VAR lYDirection AS INT NO-UNDO.
+
+      ASSIGN
+        lXDirection = getRandomCartesianDirection()
+        XVelocity = lXDirection * getBallSpeed()
+        lYDirection = getRandomCartesianDirection()
+        YVelocity = lYDirection * getBallSpeed().
     END.
     
-    ELSE
+    IF framesSinceInitialSet >= Constants:FramesToWaitForBallMovement THEN
     DO:
+
+      MoveRelativeToCurrentPosition().
       sprite:SetStateColor("Normal").
+      BallMoved:Publish(XLoc, YLoc).
     END.
 
     framesSinceInitialSet = framesSinceInitialSet + 1.
+  END METHOD.
+
+  METHOD PRIVATE DECIMAL getBallSpeed():
+    RETURN Constants:BallMovementVectorMultiplier.
+  END METHOD.
+
+  METHOD PRIVATE INT getRandomCartesianDirection():
+    RETURN RANDOM(0, 1) * 2 - 1.
   END METHOD.
 
   METHOD PRIVATE VOID handleBallCollidedWithHorizontalBoundary(pPlayer AS Player):
@@ -61,11 +80,12 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
   END METHOD.
 
   METHOD PRIVATE VOID handleBallCollidedWithHorizontalBoundaryInner():
-
+    ASSIGN XVelocity = -1 * XVelocity.
   END METHOD.
 
   METHOD PRIVATE VOID handleBallCollidedWithVerticalBoundary():
     sprite:SetStateColor("Boundary bounce").
+    ASSIGN YVelocity = -1 * YVelocity.
   END METHOD.
 
   METHOD OVERRIDE PROTECTED VOID subscribeToEvents():
