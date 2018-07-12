@@ -1,5 +1,6 @@
 ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
+USING lib.Constants.
 USING lib.GameObjects.Ball.
 USING lib.GameObjects.Player.
 USING lib.TheField.
@@ -67,22 +68,22 @@ CLASS lib.CollisionManager:
 
   METHOD PRIVATE STATIC LOG isBallCollidingWithFloor(
     pBall AS Ball):
-    RETURN FALSE.
+    RETURN pBall:YLoc + pBall:YVelocity >= Constants:GameAreaHeight.
   END METHOD.
 
   METHOD PRIVATE STATIC LOG isBallCollidingWithCeiling(
     pBall AS Ball):
-    RETURN FALSE.
+    RETURN pBall:YLoc + pBall:YVelocity <= 0.
   END METHOD.
 
   METHOD PRIVATE STATIC LOG isBallCollidingWithLeftWall(
     pBall AS Ball):
-    RETURN FALSE.
+    RETURN pBall:XLoc + pBall:XVelocity <= 0.
   END METHOD.
 
   METHOD PRIVATE STATIC LOG isBallCollidingWithRightWall(
     pBall AS Ball):
-
+    RETURN pBall:XLoc + pBall:XVelocity >= Constants:GameAreaWidth.
   END METHOD.
 
 END CLASS.
