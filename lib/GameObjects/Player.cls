@@ -52,9 +52,8 @@ CLASS lib.GameObjects.Player INHERITS GameObject:
     DEF VAR lYDirection AS INT NO-UNDO.
     ASSIGN lYDirection = inputSource:HandleInput().
 
-    DEF VAR lYVelocity AS INT NO-UNDO.
-    ASSIGN lYVelocity = lYDirection * Constants:PlayerMovementVectorMultiplier.
-    MoveRelativeToCurrentPosition(0, lYVelocity).
+    YVelocity = lYDirection * Constants:PlayerMovementVectorMultiplier.
+    MoveRelativeToCurrentPosition().
   END METHOD.
 
   METHOD OVERRIDE PROTECTED VOID subscribeToEvents():

@@ -1,6 +1,5 @@
 USING lib.Constants.
 USING lib.TheField.
-USING lib.Movement.MoveMessage.
 
 CLASS lib.GameObjects.GameObject ABSTRACT:
 
@@ -27,6 +26,14 @@ CLASS lib.GameObjects.GameObject ABSTRACT:
     PROTECTED SET.
 
   DEF PUBLIC PROPERTY YLoc AS INT NO-UNDO
+    GET.
+    PROTECTED SET.
+
+  DEF PUBLIC PROPERTY XVelocity AS DECIMAL NO-UNDO
+    GET.
+    PROTECTED SET.
+
+  DEF PUBLIC PROPERTY YVelocity AS DECIMAL NO-UNDO
     GET.
     PROTECTED SET.
 
@@ -73,32 +80,10 @@ CLASS lib.GameObjects.GameObject ABSTRACT:
 
   METHOD PROTECTED ABSTRACT VOID subscribeToEvents().
 
-  METHOD PUBLIC VOID MoveRelativeToCurrentPosition(
-    pMoveMessage AS MoveMessage):
-    IF VALID-OBJECT(pMoveMessage) THEN
-    DO:  
-      MoveRelativeToCurrentPosition(
-        pMoveMessage:GetXVector(),
-        pMoveMessage:GetYVector()).
-    END.
-  END METHOD.
-
-  METHOD PUBLIC VOID MoveRelativeToCurrentPosition(
-    pDeltaX AS INT,
-    pDeltaY AS INT):
-
-/*     IF pDeltaY > 0 THEN                                             */
-/*     DO:                                                             */
-/*       MESSAGE                                                       */
-/*         "YLoc:" YLoc SKIP                                           */
-/*         "pDeltaY:" pDeltaY SKIP                                     */
-/*         VIEW-AS ALERT-BOX                                           */
-/*         TITLE "GameObject.MoveRElativeTOCurrnetPosition(int, int)". */
-/*     END.                                                            */
-
+  METHOD PUBLIC VOID MoveRelativeToCurrentPosition():
     ASSIGN 
-      XLoc = MAX(MIN(XLoc + pDeltaX, Constants:GameAreaWidth - theWidth), 0)
-      YLoc = MAX(MIN(YLoc + pDeltaY, Constants:GameAreaHeight - theHeight), 0).
+      XLoc = MAX(MIN(XLoc + XVelocity, Constants:GameAreaWidth - theWidth), 0)
+      YLoc = MAX(MIN(YLoc + YVelocity, Constants:GameAreaHeight - theHeight), 0).
   END METHOD.
 
   METHOD PUBLIC VOID MoveToAbsolutePosition(
