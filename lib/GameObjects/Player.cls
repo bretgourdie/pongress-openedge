@@ -3,13 +3,11 @@ ROUTINE-LEVEL ON ERROR UNDO, THROW.
 USING lib.Input.InputSource.
 USING lib.GameObjects.GameObject.
 USING lib.Constants.
+USING lib.Sprites.Sprite.
+USING lib.Sprites.PlayerSprite.
 USING lib.TheField.
 
 CLASS lib.GameObjects.Player INHERITS GameObject:
-
-  DEF PRIVATE PROPERTY spriteHandle AS HANDLE NO-UNDO
-    GET.
-    SET.
 
   DEF PRIVATE PROPERTY inputSource AS InputSource NO-UNDO
     GET.
@@ -28,25 +26,11 @@ CLASS lib.GameObjects.Player INHERITS GameObject:
 
     SUPER(Constants:PlayerHeight, Constants:PlayerWidth, pStartX, pStartY, pTheField).
 
-    CREATE RECTANGLE spriteHandle ASSIGN
-      X = pStartX
-      Y = pStartY
-      BGCOLOR = Constants:WhiteColorCode
-      FGCOLOR = Constants:WhiteColorCode
-      HEIGHT-PIXELS = Constants:PlayerHeight
-      WIDTH-PIXELS = Constants:PlayerWidth
-      FRAME = pParentFrame
-      VISIBLE = TRUE.
+    ASSIGN sprite = NEW PlayerSprite(pStartX, pStartY, pParentFrame, Constants:WhiteColorCode).
 
     ASSIGN
       THIS-OBJECT:inputSource = pInputSource.
   END CONSTRUCTOR.
-
-  METHOD OVERRIDE PUBLIC VOID Draw():
-    ASSIGN
-      spriteHandle:X = XLoc
-      spriteHandle:Y = YLoc.
-  END METHOD.
 
   METHOD OVERRIDE PUBLIC VOID Update():
     DEF VAR lYDirection AS INT NO-UNDO.

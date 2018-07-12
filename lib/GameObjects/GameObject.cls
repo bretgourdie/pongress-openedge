@@ -1,4 +1,5 @@
 USING lib.Constants.
+USING lib.Sprites.Sprite.
 USING lib.TheField.
 
 CLASS lib.GameObjects.GameObject ABSTRACT:
@@ -53,6 +54,10 @@ CLASS lib.GameObjects.GameObject ABSTRACT:
     GET.
     PRIVATE SET.
 
+  DEF PROTECTED PROPERTY sprite AS Sprite NO-UNDO
+    GET.
+    SET.
+
   DEF PROTECTED PROPERTY theField AS TheField NO-UNDO
     GET.
     PRIVATE SET.
@@ -74,7 +79,9 @@ CLASS lib.GameObjects.GameObject ABSTRACT:
 
   END CONSTRUCTOR.
 
-  METHOD PUBLIC ABSTRACT VOID Draw().
+  METHOD PUBLIC VOID Draw():
+    sprite:Draw(XLoc, YLoc).
+  END METHOD.
 
   METHOD PUBLIC ABSTRACT VOID Update().
 
