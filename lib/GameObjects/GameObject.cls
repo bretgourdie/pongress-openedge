@@ -59,6 +59,7 @@ CLASS lib.GameObjects.GameObject ABSTRACT:
 
     setDimensions(pHeight, pWidth).
     MoveToAbsolutePosition(pStartX, pStartY).
+    subscribeToEvents().
     ASSIGN
       THIS-OBJECT:theField = pTheField
       THIS-OBJECT:originalXLoc = pStartX
@@ -69,6 +70,8 @@ CLASS lib.GameObjects.GameObject ABSTRACT:
   METHOD PUBLIC ABSTRACT VOID Draw().
 
   METHOD PUBLIC ABSTRACT VOID Update().
+
+  METHOD PROTECTED ABSTRACT VOID subscribeToEvents().
 
   METHOD PUBLIC VOID MoveRelativeToCurrentPosition(
     pMoveMessage AS MoveMessage):

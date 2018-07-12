@@ -1,15 +1,10 @@
 ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
+USING lib.CollisionManager.
 USING lib.GameObjects.GameObject.
+USING lib.GameObjects.Player.
 USING lib.Constants.
 USING lib.TheField.
-USING lib.Movement.MoveMessage.
-USING lib.Movement.NoMovement.
-USING lib.Movement.BallMoveMessage.
-USING lib.Movement.BallMoveDownLeft.
-USING lib.Movement.BallMoveDownRight.
-USING lib.Movement.BallMoveUpLeft.
-USING lib.Movement.BallMoveUpRight.
 
 CLASS lib.GameObjects.Ball INHERITS GameObject:
 
@@ -25,10 +20,6 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
     GET.
     SET.
 
-  DEF PUBLIC PROPERTY BallMoveMessage AS MoveMessage NO-UNDO
-    GET.
-    PRIVATE SET.
-
   DEF PRIVATE PROPERTY parentFrame AS HANDLE NO-UNDO
     GET.
     SET.
@@ -37,29 +28,12 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
     GET.
     SET.
 
-  DEF PRIVATE PROPERTY ballMoveDownLeft AS BallMoveMessage NO-UNDO
-    GET.
-    SET.
-
-  DEF PRIVATE PROPERTY ballMoveDownRight AS BallMoveMessage NO-UNDO
-    GET.
-    SET.
-
-  DEF PRIVATE PROPERTY ballMoveUpLeft AS BallMoveMessage NO-UNDO
-    GET.
-    SET.
-
-  DEF PRIVATE PROPERTY ballMoveUpRight AS BallMoveMessage NO-UNDO
-    GET.
-    SET.
-
-  DEF PUBLIC PROPERTY NoMovement AS MoveMessage NO-UNDO
-    GET.
-    PRIVATE SET.
-
   DEF PRIVATE PROPERTY spriteColorCode AS INT NO-UNDO
     GET.
     SET.
+
+  DEFINE PUBLIC EVENT BallMoved
+    SIGNATURE VOID (pXLoc AS INT, pYLoc AS INT).
 
   CONSTRUCTOR PUBLIC Ball(
     pStartX AS INT,
@@ -69,11 +43,6 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
     SUPER(Constants:BallHeight, Constants:BallWidth, pStartX, pStartY, pTheField).
 
     ASSIGN
-      THIS-OBJECT:ballMoveDownLeft = NEW BallMoveDownLeft()
-      THIS-OBJECT:ballMoveDownRight = NEW BallMoveDownRight()
-      THIS-OBJECT:ballMoveUpLeft = NEW BallMoveUpLeft()
-      THIS-OBJECT:ballMoveUpRight = NEW BallMoveUpRight()
-      THIS-OBJECT:NoMovement = NEW NoMovement()
       THIS-OBJECT:spriteColorCode = Constants:WhiteColorCode.
 
     CREATE RECTANGLE spriteInner ASSIGN
@@ -106,81 +75,19 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
 
     IF framesSinceInitialSet < Constants:FramesToWaitForBallMovement THEN
     DO:
-      BallMoveMessage = NoMovement.
       setStateColor("Waiting").
     END.
 
     ELSE IF framesSinceInitialSet = Constants:FramesToWaitForBallMovement THEN
     DO:
-      BallMoveMessage = ballMoveUpLeft.
     END.
     
     ELSE
     DO:
-      IF isHittingPaddle() THEN
-      DO:
-        BallMoveMessage = handlePaddle().
-        setStateColor("Paddle bounce").
-      END.
-
-      ELSE IF isHittingBoundary() THEN
-      DO:
-        BallMoveMessage = handleCeilingOrFloor().
-        setStateColor("Boundary bounce").
-      END.
-
-      ELSE IF isScored() THEN
-      DO:
-        handleBeginningTimer().
-        BallMoveMessage = NoMovement.
-        setStateColor("Scored").
-      END.
-
-      ELSE
-      DO:
-        setStateColor("Normal").
-      END.
-
-      MoveRelativeToCurrentPosition(BallMoveMessage).
+      setStateColor("Normal").
     END.
 
     framesSinceInitialSet = framesSinceInitialSet + 1.
-  END METHOD.
-
-  METHOD PRIVATE LOG isHittingPaddle():
-    RETURN
-      XLoc = 0 OR XLoc + theWidth = Constants:GameAreaWidth.
-  END METHOD.
-
-  METHOD PRIVATE LOG isHittingBoundary():
-    RETURN
-      YLoc = 0 OR YLoc + theHeight = Constants:GameAreaHeight.
-  END METHOD.
-
-  METHOD PRIVATE LOG isScored():
-    RETURN FALSE.
-  END METHOD.
-
-  METHOD PRIVATE BallMoveMessage handleCeilingOrFloor():
-    CASE BallMoveMessage:
-      WHEN ballMoveDownLeft THEN RETURN ballMoveUpLeft.
-      WHEN ballMoveDownRight THEN RETURN ballMoveUpRight.
-      WHEN ballMoveUpLeft THEN RETURN ballMoveDownLeft.
-      WHEN ballMoveUpRight THEN RETURN ballMoveDownRight.
-    END CASE.
-  END METHOD.
-
-  METHOD PRIVATE BallMoveMessage handlePaddle():
-    CASE BallMoveMessage:
-      WHEN ballMoveDownLeft THEN RETURN ballMoveDownRight.
-      WHEN ballMoveDownRight THEN RETURN ballMoveDownLeft.
-      WHEN ballMoveUpLeft THEN RETURN ballMoveUpRight.
-      WHEN ballMoveUpRight THEN RETURN ballMoveUpLeft.
-    END CASE.
-  END METHOD.
-
-  METHOD PRIVATE VOID handleBeginningTimer():
-    ASSIGN THIS-OBJECT:ballMoveMessage = THIS-OBJECT:NoMovement.
   END METHOD.
 
   METHOD PRIVATE VOID setStateColor(pState AS CHAR):
@@ -208,5 +115,36 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
       spriteOuter:Y = YLoc + Constants:BallOuterSpriteYOffset
       spriteOuter:BGCOLOR = spriteColorCode
       spriteOuter:FGCOLOR = spriteColorCode.
+  END METHOD.
+
+  METHOD PRIVATE VOID handleBallCollidedWithHorizontalBoundary(pPlayer AS Player):
+    setStateColor("Scored").
+    handleBallCollidedWithHorizontalBoundaryInner().
+  END METHOD.
+
+  METHOD PRIVATE VOID handleBallCollidedWithHorizontalBoundary():
+    setStateColor("Paddle bounce").
+    handleBallCollidedWithHorizontalBoundaryInner().
+  END METHOD.
+
+  METHOD PRIVATE VOID handleBallCollidedWithHorizontalBoundaryInner():
+
+  END METHOD.
+
+  METHOD PRIVATE VOID handleBallCollidedWithVerticalBoundary():
+    setStateColor("Boundary bounce").
+  END METHOD.
+
+  METHOD OVERRIDE PROTECTED VOID subscribeToEvents():
+    CollisionManager:BallCollidedWithPaddle:Subscribe(
+      handleBallCollidedWithHorizontalBoundary).
+    CollisionManager:BallCollidedWithCeiling:Subscribe(
+      handleBallCollidedWithVerticalBoundary).
+    CollisionManager:BallCollidedWithFloor:Subscribe(
+      handleBallCollidedWithVerticalBoundary).
+    CollisionManager:BallCollidedWithLeftWall:Subscribe(
+      handleBallCollidedWithHorizontalBoundary).
+    CollisionManager:BallCollidedWithRightWall:Subscribe(
+      handleBallCollidedWithHorizontalBoundary).
   END METHOD.
 END CLASS.

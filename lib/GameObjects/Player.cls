@@ -56,6 +56,9 @@ CLASS lib.GameObjects.Player INHERITS GameObject:
     MoveRelativeToCurrentPosition(lMoveMessage).
   END METHOD.
 
+  METHOD OVERRIDE PROTECTED VOID subscribeToEvents():
+  END METHOD.
+
   METHOD PUBLIC VOID IncrementScore():
     Score = Score + 1.
   END METHOD.
