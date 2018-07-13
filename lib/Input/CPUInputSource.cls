@@ -1,34 +1,72 @@
 ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
+USING lib.Constants.
+USING lib.GameObjects.Player.
 USING lib.Input.InputSource.
 USING lib.TheField.
 
 CLASS lib.Input.CPUInputSource INHERITS InputSource:
 
-  DEF PRIVATE PROPERTY theField AS TheField NO-UNDO
+  DEF PRIVATE PROPERTY isSubbed AS LOG NO-UNDO
     GET.
     SET.
 
-  CONSTRUCTOR PUBLIC CPUInputSource(pTheField AS TheField):
+  DEF PRIVATE PROPERTY YDirection AS INT NO-UNDO
+    GET.
+    SET.
+
+  DEF PRIVATE PROPERTY CPUPlayer AS Player NO-UNDO
+    GET.
+    SET.
+
+  CONSTRUCTOR PUBLIC CPUInputSource():
     SUPER().
-    ASSIGN
-      theField = pTheField.
-    subscribeToEvents().
   END CONSTRUCTOR.
 
-  METHOD OVERRIDE PUBLIC INT HandleInput():
-    DEF VAR lYDirection AS INT NO-UNDO INITIAL 0.
-    RETURN lYDirection.
-  END METHOD.
-
-  METHOD PROTECTED VOID subscribeToEvents():
-    IF VALID-OBJECT(theField:Ball) THEN
+  METHOD OVERRIDE PUBLIC INT HandleInput(pTheField AS TheField):
+    IF NOT isSubbed THEN
     DO:
-      theField:Ball:BallMoved:Subscribe(handleBallMoved).
+      subscribeToEvents(pTheField).
     END.
+
+    RETURN YDirection.
   END METHOD.
 
-  METHOD PRIVATE VOID handleBallMoved(pBallXLoc AS INT, pBallYLoc AS INT):
-    
+  METHOD PROTECTED VOID subscribeToEvents(pTheField AS TheField):
+    pTheField:Ball:BallMoved:Subscribe(handleBallMoved).
+    CPUPlayer = pTheField:CPUPlayer.
+    isSubbed = TRUE.
+  END METHOD.
+
+  METHOD PRIVATE VOID handleBallMoved(
+    pBallXLoc AS INT,
+    pBallYLoc AS INT,
+    pBallXVelocity AS DECIMAL,
+    pBallYVelocity AS DECIMAL):
+
+    IF pBallXVelocity > 0 THEN
+    DO:
+      DEF VAR lCenterOfBall AS INT NO-UNDO.
+      ASSIGN lCenterOfBall = (pBallYLoc + Constants:BallHeight) / 2.
+      DEF VAR lCenterOfPaddle AS INT NO-UNDO.
+      ASSIGN lCenterOfPaddle = (CPUPlayer:YLoc + Constants:PlayerHeight) / 2.
+  
+      IF lCenterOfBall > lCenterOfPaddle THEN
+      DO:
+        ASSIGN YDirection = 1.
+      END.
+      ELSE IF lCenterOfBall < lCenterOfPaddle THEN
+      DO:
+        ASSIGN YDirection = -1.
+      END.
+      ELSE
+      DO:
+        ASSIGN YDirection = 0.
+      END.
+    END.
+    ELSE
+    DO:
+      ASSIGN YDirection = 0.
+    END.
   END METHOD.
 END CLASS.

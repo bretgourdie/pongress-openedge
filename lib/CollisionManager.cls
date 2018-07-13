@@ -68,7 +68,8 @@ CLASS lib.CollisionManager:
 
   METHOD PRIVATE STATIC LOG isBallCollidingWithFloor(
     pBall AS Ball):
-    RETURN pBall:YLoc + pBall:YVelocity >= Constants:GameAreaHeight.
+    RETURN pBall:YLoc + pBall:TheHeight + pBall:YVelocity
+      >= Constants:GameAreaHeight.
   END METHOD.
 
   METHOD PRIVATE STATIC LOG isBallCollidingWithCeiling(
@@ -83,7 +84,8 @@ CLASS lib.CollisionManager:
 
   METHOD PRIVATE STATIC LOG isBallCollidingWithRightWall(
     pBall AS Ball):
-    RETURN pBall:XLoc + pBall:XVelocity >= Constants:GameAreaWidth.
+    RETURN pBall:XLoc + pBall:TheWidth + pBall:XVelocity
+      >= Constants:GameAreaWidth.
   END METHOD.
 
 END CLASS.

@@ -1,7 +1,9 @@
 ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
+USING lib.TheField.
+
 CLASS lib.Input.InputSource ABSTRACT:
 
-  METHOD PUBLIC ABSTRACT INT HandleInput().
+  METHOD PUBLIC ABSTRACT INT HandleInput(pTheField AS TheField).
 
 END CLASS.

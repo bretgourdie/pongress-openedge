@@ -15,7 +15,11 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
     SET.
 
   DEFINE PUBLIC EVENT BallMoved
-    SIGNATURE VOID (pXLoc AS INT, pYLoc AS INT).
+    SIGNATURE VOID (
+      pXLoc AS INT,
+      pYLoc AS INT,
+      xVelocity AS DECIMAL,
+      yVelocity AS DECIMAL).
 
   CONSTRUCTOR PUBLIC Ball(
     pStartX AS INT,
@@ -55,7 +59,7 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
 
       MoveRelativeToCurrentPosition().
       sprite:SetStateColor("Normal").
-      BallMoved:Publish(XLoc, YLoc).
+      BallMoved:Publish(XLoc, YLoc, XVelocity, YVelocity).
     END.
 
     framesSinceInitialSet = framesSinceInitialSet + 1.

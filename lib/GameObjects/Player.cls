@@ -34,7 +34,7 @@ CLASS lib.GameObjects.Player INHERITS GameObject:
 
   METHOD OVERRIDE PUBLIC VOID Update():
     DEF VAR lYDirection AS INT NO-UNDO.
-    ASSIGN lYDirection = inputSource:HandleInput().
+    ASSIGN lYDirection = inputSource:HandleInput(theField).
 
     YVelocity = lYDirection * Constants:PlayerMovementVectorMultiplier.
     MoveRelativeToCurrentPosition().

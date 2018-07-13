@@ -1,6 +1,7 @@
 ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
 USING lib.Input.InputSource.
+USING lib.TheField.
 
 CLASS lib.Input.UserInputSource INHERITS InputSource:
 
@@ -33,7 +34,7 @@ CLASS lib.Input.UserInputSource INHERITS InputSource:
     SUPER().
   END CONSTRUCTOR.
 
-  METHOD OVERRIDE PUBLIC INT HandleInput():
+  METHOD OVERRIDE PUBLIC INT HandleInput(pTheField AS TheField):
     READKEY PAUSE 0.
 
     CASE LASTKEY:

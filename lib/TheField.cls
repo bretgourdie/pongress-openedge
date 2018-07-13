@@ -32,8 +32,8 @@ CLASS lib.TheField:
     DEF VAR lPlayers AS Player EXTENT NO-UNDO.
     DEF VAR lBall AS Ball NO-UNDO.
     ASSIGN
-      lPlayers = createPlayers(pGameFieldFrameHandle)
-      lBall = createBall(pGameFieldFrameHandle).
+      lBall = createBall(pGameFieldFrameHandle)
+      lPlayers = createPlayers(pGameFieldFrameHandle).
 
     DEF VAR lArrayLength AS INT NO-UNDO.
     ASSIGN lArrayLength = EXTENT(lPlayers) + 1 /* ball */.
@@ -75,7 +75,7 @@ CLASS lib.TheField:
         lRightStartX,
         lStartY,
         pGameFieldFrameHandle,
-        NEW CPUInputSource(THIS-OBJECT),
+        NEW CPUInputSource(),
         THIS-OBJECT).
 
     DEF VAR lPlayers AS Player EXTENT 2.
