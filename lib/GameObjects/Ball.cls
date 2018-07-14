@@ -1,6 +1,7 @@
 ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
 USING lib.CollisionManager.
+USING lib.GameObjects.Ball.
 USING lib.GameObjects.GameObject.
 USING lib.GameObjects.Player.
 USING lib.Constants.
@@ -59,13 +60,13 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
 
       MoveRelativeToCurrentPosition().
       sprite:SetStateColor("Normal").
-      BallMoved:Publish(XLoc, YLoc, XVelocity, YVelocity).
+      publishBallMoved().
     END.
 
     framesSinceInitialSet = framesSinceInitialSet + 1.
   END METHOD.
 
-  METHOD PRIVATE DECIMAL getBallSpeed():
+  METHOD PROTECTED DECIMAL getBallSpeed():
     RETURN Constants:BallMovementVectorMultiplier.
   END METHOD.
 
@@ -73,28 +74,51 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
     RETURN RANDOM(0, 1) * 2 - 1.
   END METHOD.
 
-  METHOD PRIVATE VOID handleBallCollidedWithHorizontalBoundary(pPlayer AS Player):
-    sprite:SetStateColor("Scored").
-    handleBallCollidedWithHorizontalBoundaryInner().
+  METHOD PROTECTED VOID handleBallCollidedWithPaddle(
+    pBall AS Ball,
+    pPlayer AS Player):
+
+    IF pBall = THIS-OBJECT THEN
+    DO:
+      sprite:SetStateColor("Scored").
+      handleBallCollidedWithHorizontalBoundaryInner(pBall).
+    END.
   END METHOD.
 
-  METHOD PRIVATE VOID handleBallCollidedWithHorizontalBoundary():
-    sprite:SetStateColor("Paddle bounce").
-    handleBallCollidedWithHorizontalBoundaryInner().
+  METHOD PROTECTED VOID handleBallCollidedWithHorizontalBoundary(
+    pBall AS Ball):
+
+    IF pBall = THIS-OBJECT THEN
+    DO:
+      sprite:SetStateColor("Paddle bounce").
+      handleBallCollidedWithHorizontalBoundaryInner(pBall).
+    END.
   END METHOD.
 
-  METHOD PRIVATE VOID handleBallCollidedWithHorizontalBoundaryInner():
-    ASSIGN XVelocity = -1 * XVelocity.
+  METHOD PROTECTED VOID handleBallCollidedWithHorizontalBoundaryInner(
+    pBall AS Ball):
+    IF pBall = THIS-OBJECT THEN
+    DO:
+      ASSIGN XVelocity = -1 * XVelocity.
+    END.
   END METHOD.
 
-  METHOD PRIVATE VOID handleBallCollidedWithVerticalBoundary():
-    sprite:SetStateColor("Boundary bounce").
-    ASSIGN YVelocity = -1 * YVelocity.
+  METHOD PROTECTED VOID handleBallCollidedWithVerticalBoundary(
+    pBall AS Ball):
+    IF pBall = THIS-OBJECT THEN
+    DO:
+      sprite:SetStateColor("Boundary bounce").
+      ASSIGN YVelocity = -1 * YVelocity.
+    END.
+  END METHOD.
+
+  METHOD PROTECTED VOID publishBallMoved():
+    BallMoved:Publish(XLoc, YLoc, XVelocity, YVelocity).
   END METHOD.
 
   METHOD OVERRIDE PROTECTED VOID subscribeToEvents():
     CollisionManager:BallCollidedWithPaddle:Subscribe(
-      handleBallCollidedWithHorizontalBoundary).
+      handleBallCollidedWithPaddle).
     CollisionManager:BallCollidedWithCeiling:Subscribe(
       handleBallCollidedWithVerticalBoundary).
     CollisionManager:BallCollidedWithFloor:Subscribe(

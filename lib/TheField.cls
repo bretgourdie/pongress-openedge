@@ -1,6 +1,7 @@
 USING lib.Constants.
 USING lib.GameObjects.Ball.
 USING lib.GameObjects.GameObject.
+USING lib.GameObjects.Invisiball.
 USING lib.GameObjects.Player.
 USING lib.Input.CPUInputSource.
 USING lib.Input.UserInputSource.
@@ -19,6 +20,18 @@ CLASS lib.TheField:
     GET.
     PRIVATE SET.
 
+  DEF PUBLIC PROPERTY Invisiball AS Ball NO-UNDO
+    GET.
+    PRIVATE SET.
+
+  DEF PUBLIC PROPERTY Players AS Player EXTENT NO-UNDO
+    GET.
+    PRIVATE SET.
+
+  DEF PUBLIC PROPERTY Balls AS Ball EXTENT NO-UNDO
+    GET.
+    PRIVATE SET.
+
   DEF PUBLIC PROPERTY GameObjects AS GameObject EXTENT NO-UNDO
     GET.
     PRIVATE SET.
@@ -29,24 +42,24 @@ CLASS lib.TheField:
 
   METHOD PRIVATE VOID createGameObjectCollection(
     pGameFieldFrameHandle AS HANDLE):
-    DEF VAR lPlayers AS Player EXTENT NO-UNDO.
-    DEF VAR lBall AS Ball NO-UNDO.
     ASSIGN
-      lBall = createBall(pGameFieldFrameHandle)
-      lPlayers = createPlayers(pGameFieldFrameHandle).
+      Balls = createBalls(pGameFieldFrameHandle)
+      Players = createPlayers(pGameFieldFrameHandle).
 
     DEF VAR lArrayLength AS INT NO-UNDO.
-    ASSIGN lArrayLength = EXTENT(lPlayers) + 1 /* ball */.
+    ASSIGN lArrayLength = EXTENT(Players) + EXTENT(Balls).
 
     DEF VAR lGameObjects AS GameObject EXTENT.
     EXTENT(lGameObjects) = lArrayLength.
 
     DEF VAR lPlayerIndex AS INT NO-UNDO.
-    DO lPlayerIndex = 1 TO EXTENT(lPlayers):
-      lGameObjects[lPlayerIndex] = lPlayers[lPlayerIndex].
+    DO lPlayerIndex = 1 TO EXTENT(Players):
+      lGameObjects[lPlayerIndex] = Players[lPlayerIndex].
     END.
-
-    lGameObjects[lArrayLength] = lBall.
+    DEF VAR lBallIndex AS INT NO-UNDO.
+    DO lBallIndex = 1 TO EXTENT(Balls):
+      lGameObjects[lBallIndex + EXTENT(Players)] = Balls[lBallIndex].
+    END.
 
     ASSIGN GameObjects = lGameObjects.
   END METHOD.
@@ -86,7 +99,7 @@ CLASS lib.TheField:
     RETURN lPlayers.
   END METHOD.
 
-  METHOD PRIVATE Ball createBall(pGameFieldFrameHandle AS HANDLE):
+  METHOD PRIVATE Ball EXTENT createBalls(pGameFieldFrameHandle AS HANDLE):
     DEF VAR lStartX AS INT NO-UNDO.
     DEF VAR lStartY AS INT NO-UNDO.
 
@@ -99,9 +112,19 @@ CLASS lib.TheField:
         lStartX,
         lStartY,
         pGameFieldFrameHandle,
+        THIS-OBJECT)
+      Invisiball = NEW Invisiball(
+        20,
+        20,
+        pGameFieldFrameHandle,
         THIS-OBJECT).
 
-    RETURN Ball.
+    DEF VAR lBalls AS Ball EXTENT 2.
+    ASSIGN
+      lBalls[1] = Ball
+      lBalls[2] = Invisiball.
+
+    RETURN lBalls.
   END METHOD.
 
 END CLASS.

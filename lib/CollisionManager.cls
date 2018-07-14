@@ -12,52 +12,57 @@ CLASS lib.CollisionManager:
   END CONSTRUCTOR.
 
   DEFINE PUBLIC STATIC EVENT BallCollidedWithPaddle
-    SIGNATURE VOID (pPlayer AS Player).
+    SIGNATURE VOID (pBall AS Ball, pPlayer AS Player).
 
   DEFINE PUBLIC STATIC EVENT BallCollidedWithFloor
-    SIGNATURE VOID ().
+    SIGNATURE VOID (pBall AS Ball).
 
   DEFINE PUBLIC STATIC EVENT BallCollidedWithCeiling
-    SIGNATURE VOID ().
+    SIGNATURE VOID (pBall AS Ball).
 
   DEFINE PUBLIC STATIC EVENT BallCollidedWithLeftWall
-    SIGNATURE VOID ().
+    SIGNATURE VOID (pBall AS Ball).
 
   DEFINE PUBLIC STATIC EVENT BallCollidedWithRightWall
-    SIGNATURE VOID ().
+    SIGNATURE VOID (pBall AS Ball).
 
   METHOD PUBLIC STATIC VOID CheckCollisions(pTheField AS TheField):
-    
-    IF isBallCollidingWithPaddle(pTheField:Ball, pTheField:UserPlayer) THEN
-    DO:
-      BallCollidedWithPaddle:Publish(pTheField:UserPlayer).
-    END.
+    DEF VAR lBallIndex AS INT NO-UNDO.
+    DO lBallIndex = 1 TO EXTENT(pTheField:Balls):
+      DEF VAR lBall AS Ball NO-UNDO.
+      ASSIGN lBall = pTheField:Balls[lBallIndex].
 
-    ELSE IF isBallCollidingWithPaddle(pTheField:Ball, pTheField:CPUPlayer) THEN
-    DO:
-      BallCollidedWithPaddle:Publish(pTheField:CPUPlayer).
-    END.
+      IF isBallCollidingWithFloor(lBall) THEN
+      DO:
+        BallCollidedWithFloor:Publish(lBall).
+      END.
 
-    ELSE IF isBallCollidingWithFloor(pTheField:Ball) THEN
-    DO:
-      BallCollidedWithFloor:Publish().
-    END.
+      IF isBallCollidingWithCeiling(lBall) THEN
+      DO:
+        BallCollidedWithCeiling:Publish(lBall).
+      END.
 
-    ELSE IF isBallCollidingWithCeiling(pTheField:Ball) THEN
-    DO:
-      BallCollidedWithCeiling:Publish().
-    END.
+      IF isBallCollidingWithLeftWall(lBall) THEN
+      DO:
+        BallCollidedWithLeftWall:Publish(lBall).
+      END.
 
-    ELSE IF isBallCollidingWithLeftWall(pTheField:Ball) THEN
-    DO:
-      BallCollidedWithLeftWall:Publish().
-    END.
+      IF isBallCollidingWithRightWall(lBall) THEN
+      DO:
+        BallCollidedWithRightWall:Publish(lBall).
+      END.
 
-    ELSE IF isBallCollidingWithRightWall(pTheField:Ball) THEN
-    DO:
-      BallCollidedWithRightWall:Publish().
+      DEF VAR lPlayerIndex AS INT NO-UNDO.
+      DO lPlayerIndex = 1 TO EXTENT(pTheField:Players):
+        DEF VAR lPlayer AS Player NO-UNDO.
+        ASSIGN lPlayer = pTheField:Players[lPlayerIndex].
+
+        IF isBallCollidingWithPaddle(lBall, lPlayer) THEN
+        DO:
+          BallCollidedWithPaddle:Publish(lBall, lPlayer).
+        END.
+      END.
     END.
-    
   END METHOD.
 
   METHOD PRIVATE STATIC LOG isBallCollidingWithPaddle(
