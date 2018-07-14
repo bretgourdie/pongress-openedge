@@ -33,7 +33,7 @@ CLASS lib.Input.CPUInputSource INHERITS InputSource:
   END METHOD.
 
   METHOD PROTECTED VOID subscribeToEvents(pTheField AS TheField):
-    pTheField:Ball:BallMoved:Subscribe(handleBallMoved).
+    pTheField:Invisiball:BallMoved:Subscribe(handleBallMoved).
     CPUPlayer = pTheField:CPUPlayer.
     isSubbed = TRUE.
   END METHOD.
@@ -44,29 +44,23 @@ CLASS lib.Input.CPUInputSource INHERITS InputSource:
     pBallXVelocity AS DECIMAL,
     pBallYVelocity AS DECIMAL):
 
-    IF pBallXVelocity > 0 THEN
+    DEF VAR lCenterOfBall AS INT NO-UNDO.
+    ASSIGN lCenterOfBall = (pBallYLoc + Constants:BallHeight) / 2.
+    DEF VAR lCenterOfPaddle AS INT NO-UNDO.
+    ASSIGN lCenterOfPaddle = (CPUPlayer:YLoc + Constants:PlayerHeight) / 2.
+
+    IF lCenterOfBall > lCenterOfPaddle THEN
     DO:
-      DEF VAR lCenterOfBall AS INT NO-UNDO.
-      ASSIGN lCenterOfBall = (pBallYLoc + Constants:BallHeight) / 2.
-      DEF VAR lCenterOfPaddle AS INT NO-UNDO.
-      ASSIGN lCenterOfPaddle = (CPUPlayer:YLoc + Constants:PlayerHeight) / 2.
-  
-      IF lCenterOfBall > lCenterOfPaddle THEN
-      DO:
-        ASSIGN YDirection = 1.
-      END.
-      ELSE IF lCenterOfBall < lCenterOfPaddle THEN
-      DO:
-        ASSIGN YDirection = -1.
-      END.
-      ELSE
-      DO:
-        ASSIGN YDirection = 0.
-      END.
+      ASSIGN YDirection = 1.
+    END.
+    ELSE IF lCenterOfBall < lCenterOfPaddle THEN
+    DO:
+      ASSIGN YDirection = -1.
     END.
     ELSE
     DO:
       ASSIGN YDirection = 0.
     END.
+
   END METHOD.
 END CLASS.
