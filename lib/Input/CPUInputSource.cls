@@ -19,6 +19,10 @@ CLASS lib.Input.CPUInputSource INHERITS InputSource:
     GET.
     SET.
 
+  DEF PRIVATE PROPERTY isRealBallApproaching AS LOG NO-UNDO
+    GET.
+    SET.
+
   CONSTRUCTOR PUBLIC CPUInputSource():
     SUPER().
   END CONSTRUCTOR.
@@ -27,35 +31,51 @@ CLASS lib.Input.CPUInputSource INHERITS InputSource:
     IF NOT isSubbed THEN
     DO:
       subscribeToEvents(pTheField).
+      isSubbed = TRUE.
     END.
 
     RETURN YDirection.
   END METHOD.
 
   METHOD PROTECTED VOID subscribeToEvents(pTheField AS TheField):
-    pTheField:Invisiball:BallMoved:Subscribe(handleBallMoved).
+    pTheField:Invisiball:BallMoved:Subscribe(handleInvisiballMoved).
+    pTheField:Ball:BallMoved:Subscribe(handleRealBallMoved).
     CPUPlayer = pTheField:CPUPlayer.
-    isSubbed = TRUE.
   END METHOD.
 
-  METHOD PRIVATE VOID handleBallMoved(
+  METHOD PRIVATE VOID handleRealBallMoved(
+    pBallXLoc AS INT,
+    pBallYLoc AS INT,
+    pBallXVelocity AS DECIMAL,
+    pBallYVelocity AS DECIMAL):
+    ASSIGN isRealBallApproaching = pBallXVelocity > 0.
+  END METHOD.
+
+  METHOD PRIVATE VOID handleInvisiballMoved(
     pBallXLoc AS INT,
     pBallYLoc AS INT,
     pBallXVelocity AS DECIMAL,
     pBallYVelocity AS DECIMAL):
 
-    DEF VAR lCenterOfBall AS INT NO-UNDO.
-    ASSIGN lCenterOfBall = (pBallYLoc + Constants:BallHeight) / 2.
-    DEF VAR lCenterOfPaddle AS INT NO-UNDO.
-    ASSIGN lCenterOfPaddle = (CPUPlayer:YLoc + Constants:PlayerHeight) / 2.
-
-    IF lCenterOfBall > lCenterOfPaddle THEN
+    IF isRealBallApproaching THEN
     DO:
-      ASSIGN YDirection = 1.
-    END.
-    ELSE IF lCenterOfBall < lCenterOfPaddle THEN
-    DO:
-      ASSIGN YDirection = -1.
+      DEF VAR lCenterOfBall AS INT NO-UNDO.
+      ASSIGN lCenterOfBall = pBallYLoc + Constants:BallHeight / 2.
+      DEF VAR lCenterOfPaddle AS INT NO-UNDO.
+      ASSIGN lCenterOfPaddle = CPUPlayer:YLoc + Constants:PlayerHeight / 2.
+  
+      IF lCenterOfBall > lCenterOfPaddle THEN
+      DO:
+        ASSIGN YDirection = 1.
+      END.
+      ELSE IF lCenterOfBall < lCenterOfPaddle THEN
+      DO:
+        ASSIGN YDirection = -1.
+      END.
+      ELSE
+      DO:
+        ASSIGN YDirection = 0.
+      END.
     END.
     ELSE
     DO:
