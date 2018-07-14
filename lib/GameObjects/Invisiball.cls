@@ -7,6 +7,10 @@ USING lib.GameObjects.Player.
 USING lib.TheField.
 
 CLASS lib.GameObjects.Invisiball INHERITS Ball:
+
+  DEF PRIVATE PROPERTY isSubbedToBallStartedMovement AS LOG NO-UNDO
+    GET.
+    SET.
   
   CONSTRUCTOR PUBLIC Invisiball(
     pStartX AS INT,
@@ -17,6 +21,12 @@ CLASS lib.GameObjects.Invisiball INHERITS Ball:
   END CONSTRUCTOR.
 
   METHOD OVERRIDE PUBLIC VOID Update():
+    IF NOT isSubbedToBallStartedMovement THEN
+    DO:
+      subscribeToBallStartedMovement().
+      isSubbedToBallStartedMovement = TRUE.
+    END.
+
     MoveRelativeToCurrentPosition().
     sprite:SetStateColor("Scored").
     publishBallMoved().
@@ -27,14 +37,29 @@ CLASS lib.GameObjects.Invisiball INHERITS Ball:
     pPlayer AS Player):
     
     IF pPlayer EQ theField:UserPlayer AND NOT pBall = THIS-OBJECT THEN DO:
-      ASSIGN
-        XLoc = theField:Ball:XLoc
-        YLoc = theField:Ball:YLoc
-        XVelocity =
-          theField:Ball:XVelocity * Constants:InvisiballVelocityMultiplier
-        YVelocity =
-          theField:Ball:YVelocity * Constants:InvisiballVelocityMultiplier.
+      startInvisiballMovement(
+        theField:Ball:XLoc,
+        theField:Ball:YLoc,
+        theField:Ball:XVelocity,
+        theField:Ball:YVelocity).
     END.
+  END METHOD.
+
+  METHOD PROTECTED VOID startInvisiballMovement(
+    pXLoc AS INT,
+    pYLoc AS INT,
+    pXVelocity AS DECIMAL,
+    pYVelocity AS DECIMAL):
+    
+    ASSIGN
+      XLoc = pXLoc
+      YLoc = pYLoc
+      XVelocity = pXVelocity * Constants:InvisiballVelocityMultiplier
+      YVelocity = pYVelocity * Constants:InvisiballVelocityMultiplier.
+  END METHOD.
+
+  METHOD PROTECTED VOID subscribeToBallStartedMovement():
+    theField:Ball:BallStartedMovement:Subscribe(startInvisiballMovement).
   END METHOD.
 
   METHOD PROTECTED VOID handleBallCollidedWithLeftWall(

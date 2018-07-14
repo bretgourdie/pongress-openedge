@@ -19,8 +19,15 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
     SIGNATURE VOID (
       pXLoc AS INT,
       pYLoc AS INT,
-      xVelocity AS DECIMAL,
-      yVelocity AS DECIMAL).
+      pXVelocity AS DECIMAL,
+      pYVelocity AS DECIMAL).
+
+  DEFINE PUBLIC EVENT BallStartedMovement
+    SIGNATURE VOID (
+      pXLoc AS INT,
+      pYLoc AS INT,
+      pXVelocity AS DECIMAL,
+      pYVelocity AS DECIMAL).
 
   CONSTRUCTOR PUBLIC Ball(
     pStartX AS INT,
@@ -53,6 +60,8 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
         XVelocity = lXDirection * getBallSpeed()
         lYDirection = getRandomCartesianDirection()
         YVelocity = lYDirection * getBallSpeed().
+
+      BallStartedMovement:Publish(XLoc, YLoc, XVelocity, YVelocity).
     END.
     
     IF framesSinceInitialSet >= Constants:FramesToWaitForBallMovement THEN
