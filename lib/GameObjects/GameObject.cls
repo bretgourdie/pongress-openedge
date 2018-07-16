@@ -127,4 +127,11 @@ CLASS lib.GameObjects.GameObject ABSTRACT:
     RETURN pCurrentPoint + pNewOffset >= pMinPoint
       AND pCurrentPoint + pNewOffset <= pMaxPoint.
   END METHOD.
+
+  METHOD PUBLIC VOID ResetLocation():
+    MoveToAbsolutePosition(originalXLoc, originalYLoc).
+    ASSIGN
+      XVelocity = 0
+      YVelocity = 0.
+  END METHOD.
 END CLASS.

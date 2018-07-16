@@ -135,6 +135,13 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
     END.
   END METHOD.
 
+  METHOD PROTECTED VOID resetFramesSinceInitialSet(pBall AS Ball):
+    IF pBall = THIS-OBJECT THEN
+    DO:
+      framesSinceInitialSet = 0.
+    END.
+  END METHOD.
+
   METHOD OVERRIDE PROTECTED VOID subscribeToEvents():
     CollisionManager:BallCollidedWithPaddle:Subscribe(
       handleBallCollidedWithPaddle).
@@ -143,8 +150,8 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
     CollisionManager:BallCollidedWithFloor:Subscribe(
       handleBallCollidedWithVerticalBoundary).
     CollisionManager:BallCollidedWithLeftWall:Subscribe(
-      stopMovement).
+      resetFramesSinceInitialSet).
     CollisionManager:BallCollidedWithRightWall:Subscribe(
-      stopMovement).
+      resetFramesSinceInitialSet).
   END METHOD.
 END CLASS.

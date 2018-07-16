@@ -31,6 +31,7 @@ CLASS lib.GameEngine:
     ASSIGN 
       theField = NEW TheField(gameFieldFrameHandle)
       isRunning = TRUE.
+    subscribeToEvents().
   END METHOD.
 
   METHOD PUBLIC VOID Run():
@@ -73,6 +74,30 @@ CLASS lib.GameEngine:
     IF lTime > 0 THEN
     DO:
       RUN Sleep(lTime).
+    END.
+  END METHOD.
+
+  METHOD PRIVATE VOID subscribeToEvents():
+    CollisionManager:BallCollidedWithLeftWall:Subscribe(computerScored).
+    CollisionManager:BallCollidedWithRightWall:Subscribe(humanScored).
+  END METHOD.
+
+  METHOD PROTECTED VOID computerScored(pBall AS Ball):
+    playerScored(pBall, theField:CPUPlayer).
+  END METHOD.
+
+  METHOD PROTECTED VOID humanScored(pBall AS Ball):
+    playerScored(pBall, theField:UserPlayer).
+  END METHOD.
+
+  METHOD PROTECTED VOID playerScored(
+    pBall AS Ball,
+    pPlayer AS Player):
+    
+    IF pBall = theField:Ball THEN
+    DO:
+      pPlayer:IncrementScore().
+      theField:ResetAllLocations().
     END.
   END METHOD.
 

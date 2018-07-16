@@ -40,6 +40,13 @@ CLASS lib.TheField:
     createGameObjectCollection(pGameFieldFrameHandle).
   END CONSTRUCTOR.
 
+  METHOD PUBLIC VOID ResetAllLocations():
+    DEF VAR lGameObjectIndex AS INT NO-UNDO.
+    DO lGameObjectIndex = 1 TO EXTENT(GameObjects):
+      GameObjects[lGameObjectIndex]:ResetLocation().
+    END.
+  END METHOD.
+
   METHOD PRIVATE VOID createGameObjectCollection(
     pGameFieldFrameHandle AS HANDLE):
     ASSIGN
