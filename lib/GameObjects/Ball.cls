@@ -125,6 +125,16 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
     BallMoved:Publish(XLoc, YLoc, XVelocity, YVelocity).
   END METHOD.
 
+  METHOD PROTECTED VOID stopMovement(
+    pBall AS Ball):
+    IF pBall = THIS-OBJECT THEN
+    DO:
+      ASSIGN
+        XVelocity = 0
+        YVelocity = 0.
+    END.
+  END METHOD.
+
   METHOD OVERRIDE PROTECTED VOID subscribeToEvents():
     CollisionManager:BallCollidedWithPaddle:Subscribe(
       handleBallCollidedWithPaddle).
@@ -133,8 +143,8 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
     CollisionManager:BallCollidedWithFloor:Subscribe(
       handleBallCollidedWithVerticalBoundary).
     CollisionManager:BallCollidedWithLeftWall:Subscribe(
-      handleBallCollidedWithHorizontalBoundary).
+      stopMovement).
     CollisionManager:BallCollidedWithRightWall:Subscribe(
-      handleBallCollidedWithHorizontalBoundary).
+      stopMovement).
   END METHOD.
 END CLASS.

@@ -62,21 +62,6 @@ CLASS lib.GameObjects.Invisiball INHERITS Ball:
     theField:Ball:BallStartedMovement:Subscribe(startInvisiballMovement).
   END METHOD.
 
-  METHOD PROTECTED VOID handleBallCollidedWithLeftWall(
-    pBall AS Ball):
-    handleBallCollidedWithPaddle(pBall, theField:UserPlayer).
-  END METHOD.
-
-  METHOD PROTECTED VOID stopMovement(
-    pBall AS Ball):
-    IF pBall EQ THIS-OBJECT THEN
-    DO:
-      ASSIGN
-        XVelocity = 0
-        YVelocity = 0.
-    END.
-  END METHOD.
-
   METHOD OVERRIDE PROTECTED VOID subscribeToEvents():
     CollisionManager:BallCollidedWithPaddle:Subscribe(
       handleBallCollidedWithPaddle).
@@ -85,7 +70,7 @@ CLASS lib.GameObjects.Invisiball INHERITS Ball:
     CollisionManager:BallCollidedWithFloor:Subscribe(
       handleBallCollidedWithVerticalBoundary).
     CollisionManager:BallCollidedWithLeftWall:Subscribe(
-      handleBallCollidedWithLeftWall).
+      stopMovement).
     CollisionManager:BallCollidedWithRightWall:Subscribe(
       stopMovement).
   END METHOD.
