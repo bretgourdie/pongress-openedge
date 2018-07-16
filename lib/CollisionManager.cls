@@ -68,7 +68,52 @@ CLASS lib.CollisionManager:
   METHOD PRIVATE STATIC LOG isBallCollidingWithPaddle(
     pBall AS Ball,
     pPlayer AS Player):
-    RETURN FALSE.
+    DEF VAR lCenterOfBallYAxis AS DECIMAL NO-UNDO.
+    ASSIGN lCenterOfBallYAxis = pBall:YLoc + pBall:TheHeight / 2 + pBall:YVelocity.
+    DEF VAR lPlayerLowYBound AS DECIMAL NO-UNDO.
+    ASSIGN lPlayerLowYBound = pPlayer:YLoc + pPlayer:YVelocity.
+    DEF VAR lPlayerHighYBound AS DECIMAL NO-UNDO.
+    ASSIGN lPlayerHighYBound = pPlayer:YLoc + pPlayer:TheHeight + pPlayer:YVelocity.
+
+    DEF VAR lCorrectYAxis AS LOG NO-UNDO.
+    ASSIGN lCorrectYAxis =
+      lPlayerLowYBound <= lCenterOfBallYAxis
+      AND lCenterOfBallYAxis <= lPlayerHighYBound.
+
+    DEF VAR lCenterOfBallXAxis AS DECIMAL NO-UNDO.
+    ASSIGN lCenterOfBallXAxis = pBall:XLoc + pBall:TheWidth / 2.
+    DEF VAR lCenterOfBallXAxisAfterMovement AS DECIMAL NO-UNDO.
+    ASSIGN lCenterOfBallXAxisAfterMovement = lCenterOfBallXAxis + pBall:XVelocity.
+    DEF VAR lPlayerXBound AS DECIMAL NO-UNDO.
+    ASSIGN lPlayerXBound = pPlayer:XLoc + pPlayer:TheWidth + pPlayer:XVelocity.
+
+    DEF VAR lBallLowerBound AS DECIMAL NO-UNDO.
+    IF lCenterOfBallXAxis < lCenterOfBallXAxisAfterMovement THEN
+    DO:
+      ASSIGN lBallLowerBound = lCenterOfBallXAxis.
+    END.
+    ELSE
+    DO:
+      ASSIGN lBallLowerBound = lCenterOfBallXAxisAfterMovement.
+    END.
+
+    DEF VAR lBallHigherBound AS DECIMAL NO-UNDO.
+    IF lCenterOfBallXAxis > lCenterOfBallXAxisAfterMovement THEN
+    DO:
+      ASSIGN lBallHigherBound = lCenterOfBallXAxis.
+    END.
+    ELSE
+    DO:
+      ASSIGN lBallHigherBound = lCenterOfBallXAxisAfterMovement.
+    END.
+
+    DEF VAR lCorrectXAxis AS LOG NO-UNDO.
+    ASSIGN lCorrectXAxis =
+      lBallLowerBound <= lPlayerXBound
+      AND lPlayerXBound <= lBallHigherBound.
+
+    RETURN lCorrectXAxis AND lCorrectYAxis.
+
   END METHOD.
 
   METHOD PRIVATE STATIC LOG isBallCollidingWithFloor(

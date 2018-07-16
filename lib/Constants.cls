@@ -116,13 +116,12 @@ CLASS lib.Constants:
 
   DEF PUBLIC STATIC PROPERTY BallMovementVectorMultiplier AS INT NO-UNDO
     GET:
-      RETURN 6.
-      /*RETURN 7.*/
+      RETURN 7.
     END GET.
 
   DEF PUBLIC STATIC PROPERTY InvisiballVelocityMultiplier AS DECIMAL NO-UNDO
     GET:
-      RETURN 1.15.
+      RETURN 1.25.
     END GET.
 
   DEF PUBLIC STATIC PROPERTY FramesToWaitForBallMovement AS INT NO-UNDO
