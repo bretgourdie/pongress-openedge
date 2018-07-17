@@ -23,6 +23,9 @@ CLASS lib.GameEngine:
     GET.
     SET.
 
+  DEFINE PUBLIC EVENT PlayerScoreUpdated
+    SIGNATURE VOID (pIsHuman AS LOG, pCurrentScore AS INT).
+
   CONSTRUCTOR PUBLIC GameEngine(pGameFieldFrameHandle AS HANDLE):
     gameFieldFrameHandle = pGameFieldFrameHandle.
   END CONSTRUCTOR.
@@ -98,6 +101,9 @@ CLASS lib.GameEngine:
     DO:
       pPlayer:IncrementScore().
       theField:ResetAllLocations().
+      PlayerScoreUpdated:Publish(
+        pPlayer = theField:UserPlayer,
+        pPlayer:Score).
     END.
   END METHOD.
 

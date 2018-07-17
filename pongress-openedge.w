@@ -102,6 +102,13 @@ DEFINE FRAME DEFAULT-FRAME
          AT COL 1 ROW 1
          SIZE 103 BY 15.91 WIDGET-ID 100.
 
+DEFINE FRAME playFrame
+    WITH 1 DOWN KEEP-TAB-ORDER OVERLAY 
+         SIDE-LABELS NO-UNDERLINE THREE-D 
+         AT X 0 Y 0
+         SIZE-PIXELS 515 BY 259
+         BGCOLOR 0 FGCOLOR 15  WIDGET-ID 200.
+
 DEFINE FRAME settingsFrame
      playerScore AT ROW 1.48 COL 9 COLON-ALIGNED WIDGET-ID 6
      opponentScore AT ROW 1.48 COL 28 COLON-ALIGNED WIDGET-ID 8
@@ -109,14 +116,7 @@ DEFINE FRAME settingsFrame
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT COL 1 ROW 13.33
          SIZE 103 BY 3.57
-         TITLE "Settings" WIDGET-ID 300.
-
-DEFINE FRAME playFrame
-    WITH 1 DOWN KEEP-TAB-ORDER OVERLAY 
-         SIDE-LABELS NO-UNDERLINE THREE-D 
-         AT X 0 Y 0
-         SIZE-PIXELS 515 BY 259
-         BGCOLOR 0 FGCOLOR 15  WIDGET-ID 200.
+         TITLE "Scoreboard" WIDGET-ID 300.
 
 
 /* *********************** Procedure Settings ************************ */
@@ -216,7 +216,6 @@ END.
 &ANALYZE-RESUME
 
 
-&Scoped-define SELF-NAME playFrame
 &UNDEFINE SELF-NAME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CUSTOM _MAIN-BLOCK C-Win 
@@ -298,6 +297,34 @@ END PROCEDURE.
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE handlePlayerScored C-Win 
+PROCEDURE handlePlayerScored :
+/*------------------------------------------------------------------------------
+  Purpose:     
+  Parameters:  <none>
+  Notes:       
+------------------------------------------------------------------------------*/
+DEF INPUT PARAMETER pIsHumanPlayer AS LOG.
+DEF INPUT PARAMETER pScore AS INT.
+  
+DO WITH FRAME settingsFrame:
+  IF pIsHumanPlayer THEN
+  DO:
+    ASSIGN playerScore = pScore.
+    DISPLAY playerScore.
+  END.
+  ELSE
+  DO:
+    ASSIGN opponentScore = pScore.
+    DISPLAY opponentScore.
+  END.
+END.
+
+END PROCEDURE.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
 /* ************************  Function Implementations ***************** */
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION initialize C-Win 
@@ -325,6 +352,7 @@ FUNCTION startGame RETURNS LOGICAL
 
 DEF VAR lGameEngine AS GameEngine NO-UNDO.
 ASSIGN lGameEngine = NEW GameEngine(FRAME playFrame:HANDLE).
+lGameEngine:PlayerScoreUpdated:Subscribe("handlePlayerScored").
 lGameEngine:Run().
 RETURN TRUE.
 

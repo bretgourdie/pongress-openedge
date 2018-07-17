@@ -17,6 +17,9 @@ CLASS lib.GameObjects.Player INHERITS GameObject:
     GET.
     PRIVATE SET.
 
+  DEFINE PUBLIC EVENT PlayerScoreUpdated
+    SIGNATURE VOID (pCurrentScore AS INT).
+
   CONSTRUCTOR PUBLIC Player(
     pStartX AS INT,
     pStartY AS INT,
@@ -45,10 +48,12 @@ CLASS lib.GameObjects.Player INHERITS GameObject:
 
   METHOD PUBLIC VOID IncrementScore():
     Score = Score + 1.
+    PlayerScoreUpdated:Publish(Score).
   END METHOD.
 
   METHOD PUBLIC VOID ResetScore():
     Score = 0.
+    PlayerScoreUpdated:Publish(Score).
   END METHOD.
 
 END CLASS.
