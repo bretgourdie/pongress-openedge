@@ -39,6 +39,16 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
     ASSIGN sprite = getBallSprite(pStartX, pStartY, pParentFrame).
   END CONSTRUCTOR.
 
+  METHOD PUBLIC OVERRIDE VOID MoveToAbsolutePosition(
+    newX AS INT,
+    newY AS INT):
+    ASSIGN
+      XLoc = MIN(MAX(newX, minX), maxX)
+      YLoc = MIN(MAX(newY, minY), maxY).
+
+    BallMoved:Publish(XLoc, YLoc, 0, 0).
+  END METHOD.
+
   METHOD PROTECTED BallSprite getBallSprite(
     pStartX AS INT,
     pStartY AS INT,
