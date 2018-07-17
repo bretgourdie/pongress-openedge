@@ -74,13 +74,17 @@ CLASS lib.Sprites.BallSprite INHERITS Sprite:
   END METHOD.
 
   METHOD PUBLIC OVERRIDE VOID SetStateColor(pState AS CHAR):
-    CASE pState:
-      WHEN "Waiting" THEN spriteColorCode = 11.
-      WHEN "Boundary bounce" THEN spriteColorCode = 14.
-      WHEN "Paddle bounce" THEN spriteColorCode = 10.
-      WHEN "Scored" THEN spriteColorCode = 12.
-      OTHERWISE spriteColorCode = Constants:WhiteColorCode.
-    END CASE.
+    DEF VAR lDebug AS LOG NO-UNDO INITIAL FALSE.
+    IF lDebug THEN
+    DO:
+      CASE pState:
+        WHEN "Waiting" THEN spriteColorCode = 11.
+        WHEN "Boundary bounce" THEN spriteColorCode = 14.
+        WHEN "Paddle bounce" THEN spriteColorCode = 10.
+        WHEN "Scored" THEN spriteColorCode = 12.
+        OTHERWISE spriteColorCode = Constants:WhiteColorCode.
+      END CASE.
+    END.
   END METHOD.
 
   METHOD PUBLIC OVERRIDE VOID Draw(pXLoc AS INT, pYLoc AS INT):
