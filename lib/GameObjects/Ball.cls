@@ -36,12 +36,21 @@ CLASS lib.GameObjects.Ball INHERITS GameObject:
     pTheField AS TheField):
     SUPER(Constants:BallHeight, Constants:BallWidth, pStartX, pStartY, pTheField).
     
-    ASSIGN sprite = NEW BallSprite(
+    ASSIGN sprite = getBallSprite(pStartX, pStartY, pParentFrame).
+  END CONSTRUCTOR.
+
+  METHOD PROTECTED BallSprite getBallSprite(
+    pStartX AS INT,
+    pStartY AS INT,
+    pParentFrame AS HANDLE):
+
+    RETURN NEW BallSprite(
       pStartX,
       pStartY,
       pParentFrame,
-      Constants:WhiteColorCode).
-  END CONSTRUCTOR.
+      Constants:WhiteColorCode,
+      TRUE).
+  END METHOD.
 
   METHOD OVERRIDE PUBLIC VOID Update():
 

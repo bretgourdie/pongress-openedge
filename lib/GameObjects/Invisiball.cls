@@ -4,6 +4,7 @@ USING lib.CollisionManager.
 USING lib.Constants.
 USING lib.GameObjects.Ball.
 USING lib.GameObjects.Player.
+USING lib.Sprites.BallSprite.
 USING lib.TheField.
 
 CLASS lib.GameObjects.Invisiball INHERITS Ball:
@@ -28,8 +29,19 @@ CLASS lib.GameObjects.Invisiball INHERITS Ball:
     END.
 
     MoveRelativeToCurrentPosition().
-    sprite:SetStateColor("Scored").
     publishBallMoved().
+  END METHOD.
+  
+  METHOD PROTECTED OVERRIDE BallSprite getBallSprite(
+    pStartX AS INT,
+    pStartY AS INT,
+    pParentFrame AS HANDLE):
+    RETURN NEW BallSprite(
+      pStartX,
+      pStartY,
+      pParentFrame,
+      Constants:WhiteColorCode,
+      FALSE).
   END METHOD.
 
   METHOD OVERRIDE PROTECTED VOID handleBallCollidedWithPaddle(

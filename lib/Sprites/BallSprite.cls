@@ -25,12 +25,19 @@ CLASS lib.Sprites.BallSprite INHERITS Sprite:
     GET.
     SET.
 
+  DEF PRIVATE PROPERTY isVisible AS LOG NO-UNDO
+    GET.
+    SET.
+
   CONSTRUCTOR PUBLIC BallSprite(
     pStartX AS INT,
     pStartY AS INT,
     pParentFrame AS HANDLE,
-    pSpriteColorCode AS INT):
+    pSpriteColorCode AS INT,
+    pIsVisible AS LOG):
     SUPER(pStartX, pStartY, pParentFrame, pSpriteColorCode).
+
+    ASSIGN isVisible = pIsVisible.
     
   END CONSTRUCTOR.
 
@@ -47,7 +54,7 @@ CLASS lib.Sprites.BallSprite INHERITS Sprite:
       HEIGHT-PIXELS = Constants:BallInnerRectangleHeight
       WIDTH-PIXELS = Constants:BallInnerRectangleWidth
       FRAME = pParentFrame
-      VISIBLE = TRUE.
+      VISIBLE = FALSE.
 
     CREATE RECTANGLE spriteMiddle ASSIGN
       X = pStartX + Constants:BallMiddleSpriteXOffset
@@ -55,7 +62,7 @@ CLASS lib.Sprites.BallSprite INHERITS Sprite:
       HEIGHT-PIXELS = Constants:BallMiddleRectangleHeight
       WIDTH-PIXELS = Constants:BallMiddleRectangleWidth
       FRAME = pParentFrame
-      VISIBLE = TRUE.
+      VISIBLE = FALSE.
 
     CREATE RECTANGLE spriteOuter ASSIGN
       X = pStartX + Constants:BallOuterSpriteXOffset
@@ -63,7 +70,7 @@ CLASS lib.Sprites.BallSprite INHERITS Sprite:
       HEIGHT-PIXELS = Constants:BallOuterRectangleHeight
       WIDTH-PIXELS = Constants:BallOuterRectangleWidth
       FRAME = pParentFrame
-      VISIBLE = TRUE.
+      VISIBLE = FALSE.
   END METHOD.
 
   METHOD PUBLIC OVERRIDE VOID SetStateColor(pState AS CHAR):
@@ -82,14 +89,17 @@ CLASS lib.Sprites.BallSprite INHERITS Sprite:
       spriteInner:Y = pYLoc + Constants:BallInnerSpriteYOffset
       spriteInner:BGCOLOR = spriteColorCode
       spriteInner:FGCOLOR = spriteColorCode
+      spriteInner:VISIBLE = isVisible
       spriteMiddle:X = pXLoc + Constants:BallMiddleSpriteXOffset
       spriteMiddle:Y = pYLoc + Constants:BallMiddleSpriteYOffset
       spriteMiddle:BGCOLOR = spriteColorCode
       spriteMiddle:FGCOLOR = spriteColorCode
+      spriteMiddle:VISIBLE = isVisible
       spriteOuter:X = pXLoc + Constants:BallOuterSpriteXOffset
       spriteOuter:Y = pYLoc + Constants:BallOuterSpriteYOffset
       spriteOuter:BGCOLOR = spriteColorCode
-      spriteOuter:FGCOLOR = spriteColorCode.
+      spriteOuter:FGCOLOR = spriteColorCode
+      spriteOuter:VISIBLE = isVisible.
   END METHOD.
 
 END CLASS.
