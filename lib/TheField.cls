@@ -121,8 +121,8 @@ CLASS lib.TheField:
         pGameFieldFrameHandle,
         THIS-OBJECT)
       Invisiball = NEW Invisiball(
-        20,
-        20,
+        lStartX,
+        lStartY,
         pGameFieldFrameHandle,
         THIS-OBJECT).
 
