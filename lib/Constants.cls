@@ -126,7 +126,6 @@ CLASS lib.Constants:
 
   DEF PUBLIC STATIC PROPERTY FramesToWaitForBallMovement AS INT NO-UNDO
     GET:
-      RETURN 5.
-      /*RETURN 90.*/
+      RETURN 30.
     END GET.
 END CLASS.
