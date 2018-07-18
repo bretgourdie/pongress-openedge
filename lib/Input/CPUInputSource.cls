@@ -64,13 +64,20 @@ CLASS lib.Input.CPUInputSource INHERITS InputSource:
       DEF VAR lCenterOfPaddle AS INT NO-UNDO.
       ASSIGN lCenterOfPaddle = CPUPlayer:YLoc + Constants:PlayerHeight / 2.
   
-      IF lCenterOfBall > lCenterOfPaddle THEN
+      IF ABSOLUTE(lCenterOfBall - lCenterOfPaddle) >= Constants:PlayerMovementVectorMultiplier THEN
       DO:
-        ASSIGN YDirection = 1.
-      END.
-      ELSE IF lCenterOfBall < lCenterOfPaddle THEN
-      DO:
-        ASSIGN YDirection = -1.
+        IF lCenterOfBall > lCenterOfPaddle THEN
+        DO:
+          ASSIGN YDirection = 1.
+        END.
+        ELSE IF lCenterOfBall < lCenterOfPaddle THEN
+        DO:
+          ASSIGN YDirection = -1.
+        END.
+        ELSE
+        DO:
+          ASSIGN YDirection = 0.
+        END.
       END.
       ELSE
       DO:
