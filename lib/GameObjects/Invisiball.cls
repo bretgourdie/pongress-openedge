@@ -22,12 +22,6 @@ CLASS lib.GameObjects.Invisiball INHERITS Ball:
   END CONSTRUCTOR.
 
   METHOD OVERRIDE PUBLIC VOID Update():
-    IF NOT isSubbedToBallStartedMovement THEN
-    DO:
-      subscribeToBallStartedMovement().
-      isSubbedToBallStartedMovement = TRUE.
-    END.
-
     MoveRelativeToCurrentPosition().
     publishBallMoved().
   END METHOD.
@@ -68,10 +62,6 @@ CLASS lib.GameObjects.Invisiball INHERITS Ball:
       YLoc = pYLoc
       XVelocity = pXVelocity * Constants:InvisiballVelocityMultiplier
       YVelocity = pYVelocity * Constants:InvisiballVelocityMultiplier.
-  END METHOD.
-
-  METHOD PROTECTED VOID subscribeToBallStartedMovement():
-    theField:Ball:BallStartedMovement:Subscribe(startInvisiballMovement).
   END METHOD.
 
   METHOD OVERRIDE PROTECTED VOID subscribeToEvents():

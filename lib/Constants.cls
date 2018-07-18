@@ -128,4 +128,9 @@ CLASS lib.Constants:
     GET:
       RETURN 30.
     END GET.
+
+  DEF PUBLIC STATIC PROPERTY FramesToHandleInitialServe AS INT NO-UNDO
+    GET:
+      RETURN 20.
+    END GET.
 END CLASS.

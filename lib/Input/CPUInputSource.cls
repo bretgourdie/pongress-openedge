@@ -23,6 +23,14 @@ CLASS lib.Input.CPUInputSource INHERITS InputSource:
     GET.
     SET.
 
+  DEF PRIVATE PROPERTY shouldHandleRealBallMovement AS LOG NO-UNDO
+    GET.
+    SET.
+
+  DEF PRIVATE PROPERTY framesSinceRealBallMovement AS INT NO-UNDO
+    GET.
+    SET.
+
   CONSTRUCTOR PUBLIC CPUInputSource():
     SUPER().
   END CONSTRUCTOR.
@@ -40,7 +48,19 @@ CLASS lib.Input.CPUInputSource INHERITS InputSource:
   METHOD PROTECTED VOID subscribeToEvents(pTheField AS TheField):
     pTheField:Invisiball:BallMoved:Subscribe(handleInvisiballMoved).
     pTheField:Ball:BallMoved:Subscribe(handleRealBallMoved).
+    pTheField:Ball:BallStartedMovement:Subscribe(handleRealBallStartedMovement).
     CPUPlayer = pTheField:CPUPlayer.
+  END METHOD.
+
+  METHOD PRIVATE VOID handleRealBallStartedMovement(
+    pXLoc AS INT,
+    pYLoc AS INT,
+    pXVelocity AS DECIMAL,
+    pYVelocity AS DECIMAL):
+
+    ASSIGN
+      shouldHandleRealBallMovement = pXVelocity > 0 AND pYVelocity < 0
+      framesSinceRealBallMovement = 0.
   END METHOD.
 
   METHOD PRIVATE VOID handleRealBallMoved(
@@ -57,7 +77,13 @@ CLASS lib.Input.CPUInputSource INHERITS InputSource:
     pBallXVelocity AS DECIMAL,
     pBallYVelocity AS DECIMAL):
 
-    IF isRealBallApproaching THEN
+    IF shouldHandleRealBallMovement
+      AND framesSinceRealBallMovement < Constants:FramesToHandleInitialServe THEN
+    DO:
+      ASSIGN YDirection = -1.
+    END.
+
+    ELSE IF isRealBallApproaching THEN
     DO:
       DEF VAR lCenterOfBall AS INT NO-UNDO.
       ASSIGN lCenterOfBall = pBallYLoc + Constants:BallHeight / 2.
@@ -88,6 +114,8 @@ CLASS lib.Input.CPUInputSource INHERITS InputSource:
     DO:
       ASSIGN YDirection = 0.
     END.
+
+    ASSIGN framesSinceRealBallMovement = framesSinceRealBallMovement + 1.
 
   END METHOD.
 END CLASS.
